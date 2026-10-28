@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard / Catálogo — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+
+    <!-- Alertas Flash -->
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <!-- Saludo al usuario -->
+    <section class="greeting-section">
+      <h1 class="greeting-title">Hola, <span th:text="${dashboard.studentName}">Estudiante</span> 👋</h1>
+      <p class="greeting-subtitle"><span th:text="${dashboard.programName}">Ingeniería</span> · Semestre <span th:text="${dashboard.semester}">1</span></p>
+    </section>
+
+    <!-- 3 Tarjetas de Estadísticas -->
+    <section class="dashboard-stats-grid" aria-label="Estadísticas de usuario">
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background-color: #ecfdf5; color: #10b981;">
+          📚
+        </div>
+        <div class="stat-card-number" th:text="${dashboard.enrolledSubjectsCount}">0</div>
+        <div class="stat-card-label">Materias inscritas</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background-color: #eff6ff; color: #3b82f6;">
+          📥
+        </div>
+        <div class="stat-card-number" th:text="${dashboard.downloadsCount}">0</div>
+        <div class="stat-card-label">Archivos descargados</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background-color: #eff6ff; color: #3b82f6;">
+          📤
+        </div>
+        <div class="stat-card-number" th:text="${dashboard.uploadsCount}">0</div>
+        <div class="stat-card-label">Archivos subidos</div>
+      </div>
+    </section>
+
+    <!-- Catálogo de Materias -->
+    <section style="margin-bottom: 40px;">
+      <div class="section-header">
+        <h2 class="section-title">Catálogo de materias</h2>
+        <a th:href="@{/mis-materias}" style="font-size: 0.88rem; font-weight: 600;">Ver mis materias →</a>
+      </div>
+
+      <div class="catalog-grid">
+        <a th:each="subj : ${dashboard.catalogSubjects}" th:href="@{/buscar(subjectId=${subj.id})}" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code" th:text="${subj.code}">MA101</span>
+            <span th:text="${subj.notesCount} + ' archivos'">0 archivos</span>
+          </div>
+          <div class="catalog-subject-name" th:text="${subj.name}">Materia</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Tabs y Filtros -->
+    <section>
+      <div class="section-header" style="margin-bottom: 16px;">
+        <div class="tabs-nav" data-tabs>
+          <button class="tab-btn active" data-tab-target="tabRecientes">Recientes</button>
+          <button class="tab-btn" data-tab-target="tabPopulares">Populares</button>
+        </div>
+        <a th:href="@{/buscar}" style="font-size: 0.88rem; font-weight: 600;">Ver todos →</a>
+      </div>
+
+      <!-- Banner explicativo de badges -->
+      <div class="notice-banner">
+        <span style="font-size: 1.1rem; line-height: 1;">★</span>
+        <div>
+          En <strong>Apuntes UNI</strong> encuentras material colaborativo y verificado de tu carrera y materias.
+        </div>
+      </div>
+
+      <!-- Grid de Archivos Recientes -->
+      <div id="tabRecientes" class="files-grid" data-tab-content>
+        <div th:if="${#lists.isEmpty(dashboard.recentNotes)}" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">
+          Aún no hay apuntes disponibles. ¡Sé el primero en subir uno!
+        </div>
+
+        <a th:each="note : ${dashboard.recentNotes}" th:href="@{/apuntes/{id}(id=${note.id})}" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span th:if="${note.uploader.userRole.name() == 'PROFESSOR'}" class="badge badge-docente">★ Docente</span>
+              <span th:if="${note.averageRating >= 4.5}" class="badge badge-destacado">★ Destacado</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(note.format)}" th:text="${note.format}">PDF</span>
+            <span class="file-card-meta" th:text="${#numbers.formatDecimal(note.sizeMB, 1, 1)} + ' MB'">1.5 MB</span>
+          </div>
+          <h3 class="file-card-title" th:text="${note.title}">Título del apunte</h3>
+          <p class="file-card-meta"><span th:text="${note.subject.name}">Materia</span> · <span th:text="${note.topic != null ? note.topic.name : 'General'}">Tema</span></p>
+          <div class="file-card-stats">
+            <div class="stars-rating">
+              ★ <span th:text="${#numbers.formatDecimal(note.averageRating, 1, 1)}">5.0</span>
+              <span class="vote-count" th:text="'(' + ${note.ratingsCount} + ')'">(0)</span>
+            </div>
+            <div class="downloads-count" th:text="'↓ ' + ${note.downloadsCount}">↓ 0</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author" th:text="${note.uploader.fullName}">Autor</span>
+            <span th:text="${#temporals.format(note.uploadDate, 'dd MMM yyyy')}">15 ago 2025</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Grid de Archivos Populares -->
+      <div id="tabPopulares" class="files-grid" data-tab-content style="display: none;">
+        <div th:if="${#lists.isEmpty(dashboard.popularNotes)}" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">
+          No hay datos de popularidad aún.
+        </div>
+
+        <a th:each="note : ${dashboard.popularNotes}" th:href="@{/apuntes/{id}(id=${note.id})}" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span th:if="${note.averageRating >= 4.5}" class="badge badge-destacado">★ Destacado</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(note.format)}" th:text="${note.format}">PDF</span>
+            <span class="file-card-meta" th:text="${#numbers.formatDecimal(note.sizeMB, 1, 1)} + ' MB'">1.5 MB</span>
+          </div>
+          <h3 class="file-card-title" th:text="${note.title}">Título del apunte</h3>
+          <p class="file-card-meta"><span th:text="${note.subject.name}">Materia</span> · <span th:text="${note.topic != null ? note.topic.name : 'General'}">Tema</span></p>
+          <div class="file-card-stats">
+            <div class="stars-rating">
+              ★ <span th:text="${#numbers.formatDecimal(note.averageRating, 1, 1)}">5.0</span>
+              <span class="vote-count" th:text="'(' + ${note.ratingsCount} + ')'">(0)</span>
+            </div>
+            <div class="downloads-count" th:text="'↓ ' + ${note.downloadsCount}">↓ 0</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author" th:text="${note.uploader.fullName}">Autor</span>
+            <span th:text="${#temporals.format(note.uploadDate, 'dd MMM yyyy')}">15 ago 2025</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Botón Flotante Subir Archivo -->
+  <a th:href="@{/subir}" class="btn-floating" aria-label="Subir un nuevo archivo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    Subir archivo
+  </a>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

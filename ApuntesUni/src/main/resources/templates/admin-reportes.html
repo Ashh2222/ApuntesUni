@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Moderación y Reportes — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Admin -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content">
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="admin-layout">
+
+      <!-- Sidebar Admin -->
+      <aside class="admin-sidebar" aria-label="Menú de administración">
+        <div class="admin-sidebar-header">Panel de Control</div>
+        <nav class="admin-nav">
+          <a th:href="@{/admin/materias}" class="admin-nav-item">Gestión de Materias</a>
+          <a th:href="@{/admin/roles}" class="admin-nav-item">Usuarios y Roles</a>
+          <a th:href="@{/moderacion/reportes}" class="admin-nav-item active">Reportes y Moderación</a>
+        </nav>
+      </aside>
+
+      <!-- Contenido Admin -->
+      <section>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text);">Bandeja de Reportes de Contenido</h1>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted);" th:text="${pendingCount} + ' reportes pendientes de revisión'">0 pendientes</p>
+          </div>
+        </div>
+
+        <div class="admin-content-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Apunte Reportado</th>
+                <th>Reportado por</th>
+                <th>Motivo</th>
+                <th>Detalles</th>
+                <th>Fecha</th>
+                <th style="text-align: right;">Acciones de Moderación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(reports.content)}">
+                <td colspan="6" style="text-align: center; color: #64748b; padding: 28px;">
+                  🎉 ¡No hay reportes pendientes de revisión! Todo el contenido está al día.
+                </td>
+              </tr>
+              <tr th:each="r : ${reports.content}">
+                <td>
+                  <a th:href="@{/apuntes/{id}(id=${r.note.id})}" target="_blank" style="font-weight: 600; color: var(--color-primary); text-decoration: none;" th:text="${r.note.title}">Título</a>
+                  <div style="font-size: 0.75rem; color: var(--color-text-muted);" th:text="${r.note.subject.name}">Materia</div>
+                </td>
+                <td th:text="${r.reporter.fullName}">Estudiante</td>
+                <td>
+                  <span class="badge" style="background: #fee2e2; color: #b91c1c;" th:text="${r.reason}">PLAGIO</span>
+                </td>
+                <td style="font-size: 0.82rem; color: #475569; max-width: 250px;" th:text="${r.description}">Detalles</td>
+                <td style="color: var(--color-text-muted); font-size: 0.8rem;" th:text="${#temporals.format(r.createdAt, 'dd MMM yyyy')}">Fecha</td>
+                <td style="text-align: right;">
+                  <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                    <!-- Desestimar -->
+                    <form th:action="@{/moderacion/reportes/{id}/resolver(id=${r.id})}" method="post" style="margin: 0;">
+                      <input type="hidden" name="status" value="DISMISSED">
+                      <input type="hidden" name="resolutionNotes" value="Reporte desestimado tras revisión.">
+                      <button type="submit" class="btn btn-outline btn-sm" style="padding: 4px 8px; font-size: 0.75rem;" title="Desestimar reporte">Desestimar</button>
+                    </form>
+                    <!-- Resolver y Ocultar -->
+                    <form th:action="@{/moderacion/reportes/{id}/resolver(id=${r.id})}" method="post" style="margin: 0;" onsubmit="return confirm('¿Confirmas ocultar este apunte por infringir las normas?');">
+                      <input type="hidden" name="status" value="RESOLVED">
+                      <input type="hidden" name="hideNote" value="true">
+                      <input type="hidden" name="resolutionNotes" value="Contenido retirado por moderación.">
+                      <button type="submit" class="btn btn-danger btn-sm" style="padding: 4px 8px; font-size: 0.75rem;">Ocultar Apunte</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div th:if="${reports.totalPages > 1}" class="table-footer">
+            <span th:text="'Página ' + (${reports.number} + 1) + ' de ' + ${reports.totalPages}">Página 1</span>
+            <div style="display: flex; gap: 6px;">
+              <a th:if="${reports.hasPrevious()}" th:href="@{/moderacion/reportes(page=${reports.number - 1})}" class="btn btn-outline btn-sm">&lt;</a>
+              <a th:if="${reports.hasNext()}" th:href="@{/moderacion/reportes(page=${reports.number + 1})}" class="btn btn-outline btn-sm">&gt;</a>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

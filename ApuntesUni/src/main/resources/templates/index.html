@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apuntes UNI — Plataforma Colaborativa de Apuntes Universitarios</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Público -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a th:href="@{/}" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+      </div>
+      <div class="header-actions">
+        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="nav-link">Iniciar sesión</a>
+        <a sec:authorize="isAnonymous()" th:href="@{/registro}" class="btn btn-primary btn-sm" style="border-radius: 20px;">Crear cuenta</a>
+        <a sec:authorize="isAuthenticated()" th:href="@{/dashboard}" class="btn btn-primary btn-sm" style="border-radius: 20px;">Ir a mi Dashboard &rarr;</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="hero-dot"></span>
+          Universidad Nacional de Ingeniería
+        </div>
+        <h1 class="hero-title">
+          Apuntes y resúmenes <span style="color: var(--color-primary);">de tus</span><br>compañeros
+        </h1>
+        <p class="hero-subtitle">
+          Busca, descarga y comparte apuntes y resúmenes hechos por estudiantes como tú. Organizado por carrera y materia. Calificado por la comunidad.
+        </p>
+        <div class="hero-buttons">
+          <a sec:authorize="isAnonymous()" th:href="@{/registro}" class="btn btn-primary" style="padding: 12px 24px; font-size: 0.95rem; border-radius: 24px;">Crear cuenta gratis</a>
+          <a th:href="@{/buscar}" class="btn btn-outline" style="padding: 12px 24px; font-size: 0.95rem; border-radius: 24px;">Explorar apuntes</a>
+        </div>
+      </div>
+
+      <!-- Tarjetas de Ejemplo a la derecha -->
+      <div class="hero-cards-stack">
+        <div class="hero-sample-card">
+          <div>
+            <span class="badge badge-pill-soft" style="margin-bottom: 6px;">Apunte</span>
+            <h2 style="font-size: 0.92rem; font-weight: 700; color: var(--color-text);">Resumen completo: Integral definida</h2>
+            <span style="font-size: 0.8rem; color: var(--color-text-muted);">Cálculo I · 14 págs.</span>
+          </div>
+          <div style="color: #f59e0b; font-size: 0.85rem; letter-spacing: 1px;">★★★★★</div>
+        </div>
+
+        <div class="hero-sample-card">
+          <div>
+            <span class="badge" style="background-color: var(--color-purple-light); color: var(--color-purple); margin-bottom: 6px;">Resumen</span>
+            <h2 style="font-size: 0.92rem; font-weight: 700; color: var(--color-text);">Guía de Dinámica y Leyes de Newton</h2>
+            <span style="font-size: 0.8rem; color: var(--color-text-muted);">Física I · 8 págs.</span>
+          </div>
+          <div style="color: #f59e0b; font-size: 0.85rem; letter-spacing: 1px;">★★★★★</div>
+        </div>
+
+        <div class="hero-sample-card">
+          <div>
+            <span class="badge badge-pill-soft" style="margin-bottom: 6px;">Ejercicios</span>
+            <h2 style="font-size: 0.92rem; font-weight: 700; color: var(--color-text);">Transformaciones lineales y subespacios</h2>
+            <span style="font-size: 0.8rem; color: var(--color-text-muted);">Álgebra Lineal · 10 págs.</span>
+          </div>
+          <div style="color: #f59e0b; font-size: 0.85rem; letter-spacing: 1px;">★★★★★</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Franja de Estadísticas -->
+    <section class="landing-stats-strip">
+      <div>
+        <div class="landing-stat-number">+1,000</div>
+        <div class="landing-stat-label">Archivos compartidos</div>
+      </div>
+      <div>
+        <div class="landing-stat-number">+500</div>
+        <div class="landing-stat-label">Estudiantes activos</div>
+      </div>
+      <div>
+        <div class="landing-stat-number">10+</div>
+        <div class="landing-stat-label">Carreras de la UNI</div>
+      </div>
+      <div>
+        <div class="landing-stat-number">4.8★</div>
+        <div class="landing-stat-label">Calificación promedio</div>
+      </div>
+    </section>
+
+    <!-- Sección Inferior -->
+    <section class="landing-cta-section">
+      <h2 class="landing-cta-title">Material académico organizado y al alcance de todos</h2>
+      <p class="landing-cta-subtitle">
+        Una sola plataforma para encontrar, previsualizar y descargar el material de estudio que tus compañeros subieron y que funciona para aprobar tus parciales.
+      </p>
+      <div style="margin-top: 24px;">
+        <a sec:authorize="isAnonymous()" th:href="@{/registro}" class="btn btn-primary" style="padding: 12px 28px; border-radius: 24px;">Unirse a la comunidad</a>
+      </div>
+    </section>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

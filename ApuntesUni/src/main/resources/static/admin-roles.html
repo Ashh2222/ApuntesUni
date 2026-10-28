@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de roles — Panel Admin — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Admin -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="dashboard.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+
+        <div class="header-search">
+          <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <input type="search" placeholder="Busca por título o palabra clave..." aria-label="Buscar">
+        </div>
+      </div>
+
+      <nav class="header-nav" aria-label="Navegación admin">
+        <a href="admin-materias.html" class="nav-link">Materias</a>
+        <a href="admin-roles.html" class="nav-link active">Roles</a>
+        <a href="admin-reportes.html" class="nav-link">Reportados</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="subir.html" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 7px 16px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          Subir
+        </a>
+
+        <a href="notificaciones.html" class="icon-bell-btn" aria-label="Notificaciones">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notification-dot"></span>
+        </a>
+
+        <a href="perfil.html" class="user-avatar-btn" aria-label="Perfil de usuario">
+          <span class="avatar-circle">AR</span>
+          <svg class="avatar-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <div class="admin-layout">
+
+      <!-- Sidebar Admin -->
+      <aside class="admin-sidebar" aria-label="Menú de administración">
+        <div class="admin-sidebar-header">Panel Admin</div>
+        <nav class="admin-nav">
+          <a href="admin-materias.html" class="admin-nav-item">Materias</a>
+          <a href="admin-roles.html" class="admin-nav-item active">Roles de usuario</a>
+          <a href="admin-reportes.html" class="admin-nav-item">Archivos reportados</a>
+        </nav>
+      </aside>
+
+      <!-- Contenido Admin -->
+      <section>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text);">Gestión de roles</h1>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted);">9 usuarios registrados</p>
+          </div>
+
+          <div style="position: relative; max-width: 240px; width: 100%;">
+            <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; fill: var(--color-text-muted);" viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+            <input type="search" placeholder="Buscar usuario..." class="form-input" style="padding-left: 34px; border-radius: 20px; font-size: 0.82rem;">
+          </div>
+        </div>
+
+        <div class="admin-content-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol actual</th>
+                <th>Miembro desde</th>
+                <th>Cambiar rol</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="avatar-circle" style="background-color: #dbeafe; color: #1e40af; width: 28px; height: 28px; font-size: 0.72rem;">AL</span>
+                    <span style="font-weight: 600;">Ana Lucía Romero</span>
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">aromero@uni.edu.pe</td>
+                <td><span class="badge badge-role-estudiante">Estudiante</span></td>
+                <td style="color: var(--color-text-muted);">12 mar 2024</td>
+                <td>
+                  <select class="form-select" style="padding: 4px 10px; font-size: 0.82rem; width: 140px;" onchange="handleRoleChange(this, 'Ana Lucía Romero')">
+                    <option selected>Estudiante</option>
+                    <option>Profesor</option>
+                    <option>Administrador</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="avatar-circle" style="background-color: #dbeafe; color: #1e40af; width: 28px; height: 28px; font-size: 0.72rem;">CE</span>
+                    <span style="font-weight: 600;">Carlos Eduardo Mendoza</span>
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">cmendoza@uni.edu.pe</td>
+                <td><span class="badge badge-role-estudiante">Estudiante</span></td>
+                <td style="color: var(--color-text-muted);">3 ene 2024</td>
+                <td>
+                  <select class="form-select" style="padding: 4px 10px; font-size: 0.82rem; width: 140px;" onchange="handleRoleChange(this, 'Carlos Eduardo Mendoza')">
+                    <option selected>Estudiante</option>
+                    <option>Profesor</option>
+                    <option>Administrador</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="avatar-circle" style="background-color: #dbeafe; color: #1e40af; width: 28px; height: 28px; font-size: 0.72rem;">VS</span>
+                    <span style="font-weight: 600;">Valeria Soto</span>
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">vsoto@uni.edu.pe</td>
+                <td><span class="badge badge-role-estudiante">Estudiante</span></td>
+                <td style="color: var(--color-text-muted);">20 ago 2023</td>
+                <td>
+                  <select class="form-select" style="padding: 4px 10px; font-size: 0.82rem; width: 140px;" onchange="handleRoleChange(this, 'Valeria Soto')">
+                    <option selected>Estudiante</option>
+                    <option>Profesor</option>
+                    <option>Administrador</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="avatar-circle" style="background-color: #ede9fe; color: #6d28d9; width: 28px; height: 28px; font-size: 0.72rem;">DP</span>
+                    <span style="font-weight: 600;">Diego Paredes</span>
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">dparedes@uni.edu.pe</td>
+                <td><span class="badge badge-role-profesor">Profesor</span></td>
+                <td style="color: var(--color-text-muted);">5 feb 2023</td>
+                <td>
+                  <select class="form-select" style="padding: 4px 10px; font-size: 0.82rem; width: 140px;" onchange="handleRoleChange(this, 'Diego Paredes')">
+                    <option>Estudiante</option>
+                    <option selected>Profesor</option>
+                    <option>Administrador</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="avatar-circle" style="background-color: #dbeafe; color: #1e40af; width: 28px; height: 28px; font-size: 0.72rem;">MC</span>
+                    <span style="font-weight: 600;">María Chávez</span>
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">mchavez@uni.edu.pe</td>
+                <td><span class="badge badge-role-estudiante">Estudiante</span></td>
+                <td style="color: var(--color-text-muted);">8 sep 2024</td>
+                <td>
+                  <select class="form-select" style="padding: 4px 10px; font-size: 0.82rem; width: 140px;" onchange="handleRoleChange(this, 'María Chávez')">
+                    <option selected>Estudiante</option>
+                    <option>Profesor</option>
+                    <option>Administrador</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="avatar-circle" style="background-color: #dbeafe; color: #1e40af; width: 28px; height: 28px; font-size: 0.72rem;">LA</span>
+                    <span style="font-weight: 600;">Luis Alberto Ríos</span>
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">lrios@uni.edu.pe</td>
+                <td><span class="badge badge-role-estudiante">Estudiante</span></td>
+                <td style="color: var(--color-text-muted);">22 jun 2024</td>
+                <td>
+                  <select class="form-select" style="padding: 4px 10px; font-size: 0.82rem; width: 140px;" onchange="handleRoleChange(this, 'Luis Alberto Ríos')">
+                    <option selected>Estudiante</option>
+                    <option>Profesor</option>
+                    <option>Administrador</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="avatar-circle" style="background-color: #fef3c7; color: #b45309; width: 28px; height: 28px; font-size: 0.72rem;">SV</span>
+                    <span style="font-weight: 600;">Sofía Vargas</span>
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">svargas@uni.edu.pe</td>
+                <td><span class="badge badge-role-admin">Administrador</span></td>
+                <td style="color: var(--color-text-muted);">1 ene 2023</td>
+                <td>
+                  <select class="form-select" style="padding: 4px 10px; font-size: 0.82rem; width: 140px;" onchange="handleRoleChange(this, 'Sofía Vargas')">
+                    <option>Estudiante</option>
+                    <option>Profesor</option>
+                    <option selected>Administrador</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="table-footer">
+            <span>Página 1 de 2 · 9 usuarios</span>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" class="btn btn-outline btn-sm" style="padding: 4px 8px;" aria-label="Página anterior">&lt;</button>
+              <button type="button" class="btn btn-outline btn-sm" style="padding: 4px 8px;" aria-label="Página siguiente">&gt;</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Modal Confirmar cambio de rol (con especialización docente) -->
+  <div id="roleChangeModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="roleChangeTitle">
+    <div class="modal-card">
+      <button type="button" class="modal-close" data-close-modal aria-label="Cerrar modal">×</button>
+      <h2 id="roleChangeTitle" class="modal-title">Confirmar cambio de rol</h2>
+      <p id="roleChangeText" class="modal-subtitle" style="margin-bottom: 16px;">
+        ¿Estás seguro de cambiar el rol de <strong id="modalUserName">Ana Lucía Romero</strong> a <strong>Profesor</strong>?
+      </p>
+
+      <!-- Banner de Materias Especializadas (Docente) -->
+      <div id="specializedSection">
+        <div class="info-banner" style="margin-bottom: 14px; padding: 10px 14px; font-size: 0.8rem; background-color: var(--color-purple-light); border-color: #ddd6fe; color: var(--color-purple); align-items: flex-start;">
+          <span style="font-size: 1.1rem; line-height: 1;">🎓</span>
+          <div>
+            <strong>Materias especializadas de este docente</strong>
+            <div style="font-size: 0.75rem; color: #6b21a8; margin-top: 2px;">
+              Los archivos que suba en estas materias mostrarán el badge "Apuntes de docente".
+            </div>
+          </div>
+        </div>
+
+        <div style="max-height: 160px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <label class="filter-option" style="margin-bottom: 0;">
+            <input type="checkbox" checked>
+            <span>Cálculo I</span>
+          </label>
+          <label class="filter-option" style="margin-bottom: 0;">
+            <input type="checkbox">
+            <span>Física I</span>
+          </label>
+          <label class="filter-option" style="margin-bottom: 0;">
+            <input type="checkbox">
+            <span>Álgebra Lineal</span>
+          </label>
+          <label class="filter-option" style="margin-bottom: 0;">
+            <input type="checkbox">
+            <span>Química General</span>
+          </label>
+          <label class="filter-option" style="margin-bottom: 0;">
+            <input type="checkbox">
+            <span>Programación I</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" data-close-modal>Cancelar</button>
+        <button type="button" onclick="confirmRoleChange()" class="btn btn-primary">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    let activeSelect = null;
+
+    function handleRoleChange(selectElement, userName) {
+      activeSelect = selectElement;
+      const nuevoRol = selectElement.value;
+      document.getElementById('modalUserName').textContent = userName;
+      document.getElementById('roleChangeText').innerHTML = `¿Estás seguro de cambiar el rol de <strong>${userName}</strong> a <strong>${nuevoRol}</strong>?`;
+      
+      const specSection = document.getElementById('specializedSection');
+      if (nuevoRol === 'Profesor') {
+        specSection.style.display = 'block';
+      } else {
+        specSection.style.display = 'none';
+      }
+
+      openModal('roleChangeModal');
+    }
+
+    function confirmRoleChange() {
+      alert('Rol actualizado exitosamente.');
+      closeModal('roleChangeModal');
+    }
+  </script>
+</body>
+</html>

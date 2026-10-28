@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página No Encontrada — 404 — Apuntes UNI</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: #f8fafc; padding: 20px;">
+    <div style="max-width: 500px; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+        <div style="font-size: 4rem; margin-bottom: 16px;">🔍</div>
+        <h1 style="font-size: 2rem; color: #1e293b; margin-bottom: 8px;">404 — No Encontrado</h1>
+        <p style="color: #64748b; font-size: 1rem; margin-bottom: 24px;">El apunte, materia o página que estás buscando no existe o fue retirada por su autor o moderación.</p>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <a th:href="@{/dashboard}" class="btn btn-primary" style="border-radius: 20px; padding: 10px 24px;">Volver al Dashboard</a>
+            <a th:href="@{/buscar}" class="btn btn-secondary" style="border-radius: 20px; padding: 10px 24px;">Explorar Apuntes</a>
+        </div>
+    </div>
+</body>
+</html>

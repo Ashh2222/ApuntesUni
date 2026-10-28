@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subir Apunte — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content main-content-narrow">
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <!-- Encabezado de Página -->
+    <div style="text-align: center; margin-bottom: 32px;">
+      <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text); margin-bottom: 6px;">Subir nuevo apunte</h1>
+      <p style="font-size: 0.88rem; color: var(--color-text-muted);">Comparte tus resúmenes y ejercicios con toda la comunidad universitaria.</p>
+    </div>
+
+    <form id="uploadForm" th:action="@{/subir}" method="post" enctype="multipart/form-data" th:object="${uploadDto}">
+
+      <!-- Paso 1: Selecciona el archivo -->
+      <section class="upload-card-step">
+        <div class="step-header">
+          <span id="stepBadge1" class="step-badge pending">1</span>
+          <span>Selecciona el archivo</span>
+        </div>
+
+        <!-- Zona Dropzone vacía -->
+        <div id="dropzoneEmpty" class="dropzone" onclick="document.getElementById('fileInputReal').click()">
+          <input type="file" id="fileInputReal" name="file" accept=".pdf,.docx,.doc,.ppt,.pptx,.jpg,.jpeg,.png,.txt" style="display: none;" required onchange="handleFileSelected(this)">
+          <div style="width: 44px; height: 44px; margin: 0 auto 10px auto; background-color: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          </div>
+          <p style="font-size: 0.95rem; font-weight: 600; color: var(--color-text); margin-bottom: 4px;">
+            Arrastra tu archivo o <span style="color: var(--color-primary); text-decoration: underline;">haz clic para seleccionar</span>
+          </p>
+          <p style="font-size: 0.78rem; color: var(--color-text-muted);">PDF, DOCX, PPTX, JPG, PNG · Máximo 25 MB</p>
+        </div>
+
+        <!-- Vista Archivo Seleccionado -->
+        <div id="dropzoneFilled" class="dropzone-filled" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background-color: #dcfce7; color: #16a34a; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+              ✓
+            </div>
+            <div>
+              <div id="uploadedFileName" style="font-size: 0.9rem; font-weight: 600; color: var(--color-text);">archivo.pdf</div>
+              <div id="uploadedFileSize" style="font-size: 0.75rem; color: var(--color-text-muted);">0 KB</div>
+            </div>
+          </div>
+          <button type="button" onclick="resetFile()" style="background: none; border: none; color: var(--color-primary); font-size: 0.82rem; cursor: pointer; text-decoration: underline;">
+            Cambiar archivo
+          </button>
+        </div>
+      </section>
+
+      <!-- Paso 2: Título y Materia -->
+      <section class="upload-card-step">
+        <div class="step-header">
+          <span class="step-badge">2</span>
+          <span>Información Académica</span>
+        </div>
+
+        <div class="form-group">
+          <label for="title" class="form-label">Título del apunte</label>
+          <input type="text" id="title" th:field="*{title}" class="form-input" placeholder="Ej. Resumen completo de Integral Definida con ejercicios resueltos" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label for="subjectSelect" class="form-label">Materia</label>
+            <select id="subjectSelect" th:field="*{subjectId}" class="form-select" required onchange="loadTopics(this.value)">
+              <option value="">Selecciona la materia...</option>
+              <option th:each="s : ${subjects}" th:value="${s.id}" th:text="${s.name} + ' (' + ${s.code} + ')'">Cálculo I</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="topicSelect" class="form-label">Tema específico (opcional)</label>
+            <select id="topicSelect" th:field="*{topicId}" class="form-select">
+              <option value="">Selecciona un tema...</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 8px;">
+          <label for="tags" class="form-label">Palabras clave / Etiquetas (separadas por comas)</label>
+          <input type="text" id="tags" th:field="*{tags}" class="form-input" placeholder="Ej. parciales, integrales, formulario, laboratorio">
+        </div>
+      </section>
+
+      <!-- Paso 3: Descripción del archivo -->
+      <section class="upload-card-step">
+        <div class="step-header" style="justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="step-badge">3</span>
+            <span>Descripción del contenido</span>
+          </div>
+          <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-danger); background-color: #fee2e2; padding: 2px 8px; border-radius: 4px;">
+            Obligatorio
+          </span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 6px;">
+          <label for="descArchivo">Resume qué temas y problemas cubre tu apunte</label>
+          <span id="charCounter">0/1000</span>
+        </div>
+
+        <textarea id="descArchivo" th:field="*{description}" class="form-textarea" rows="4" maxlength="1000" required placeholder="Describe qué incluye el documento, fórmulas clave, ejemplos resueltos o recomendaciones para exámenes..."></textarea>
+      </section>
+
+      <!-- Botones de Acción -->
+      <div style="display: flex; gap: 14px; margin-top: 24px;">
+        <a th:href="@{/dashboard}" class="btn btn-outline" style="flex: 1; padding: 12px; text-align: center; text-decoration: none;">Cancelar</a>
+        <button type="submit" id="btnPublicar" class="btn btn-primary" style="flex: 1; padding: 12px;">Publicar apunte</button>
+      </div>
+
+    </form>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+  <script>
+    function handleFileSelected(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        document.getElementById('uploadedFileName').textContent = file.name;
+        document.getElementById('uploadedFileSize').textContent = (file.size / 1024 > 1024 ? (file.size / (1024*1024)).toFixed(1) + ' MB' : (file.size / 1024).toFixed(0) + ' KB');
+        document.getElementById('dropzoneEmpty').style.display = 'none';
+        document.getElementById('dropzoneFilled').style.display = 'flex';
+        const b = document.getElementById('stepBadge1');
+        b.classList.remove('pending');
+        b.classList.add('done');
+        b.textContent = '✓';
+      }
+    }
+
+    function resetFile() {
+      document.getElementById('fileInputReal').value = '';
+      document.getElementById('dropzoneFilled').style.display = 'none';
+      document.getElementById('dropzoneEmpty').style.display = 'block';
+      const b = document.getElementById('stepBadge1');
+      b.classList.remove('done');
+      b.classList.add('pending');
+      b.textContent = '1';
+    }
+
+    async function loadTopics(subjectId) {
+      const topicSelect = document.getElementById('topicSelect');
+      topicSelect.innerHTML = '<option value="">Cargando temas...</option>';
+      if (!subjectId) {
+        topicSelect.innerHTML = '<option value="">Selecciona un tema...</option>';
+        return;
+      }
+      try {
+        const resp = await fetch('/api/materias/' + subjectId + '/temas');
+        const topics = await resp.json();
+        topicSelect.innerHTML = '<option value="">Selecciona un tema...</option>';
+        topics.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.id;
+          opt.textContent = t.name;
+          topicSelect.appendChild(opt);
+        });
+      } catch (err) {
+        topicSelect.innerHTML = '<option value="">General</option>';
+      }
+    }
+
+    const desc = document.getElementById('descArchivo');
+    const counter = document.getElementById('charCounter');
+    if (desc && counter) {
+      desc.addEventListener('input', () => {
+        counter.textContent = desc.value.length + '/1000';
+      });
+    }
+  </script>
+</body>
+</html>

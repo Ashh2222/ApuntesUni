@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding de perfil — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+
+  <header class="auth-header">
+    <div class="avatar-circle" style="width: 44px; height: 44px; font-size: 1.2rem; margin: 0 auto 12px auto; box-shadow: 0 4px 10px rgba(47, 95, 224, 0.3);">
+      U
+    </div>
+  </header>
+
+  <main class="auth-card" style="max-width: 460px;">
+    <!-- Encabezado de paso y progreso -->
+    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--color-text-muted); margin-bottom: 8px;">
+      <span>Configura tu perfil</span>
+      <span>Paso obligatorio</span>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" style="width: 50%;"></div>
+    </div>
+
+    <h1 class="auth-card-title">Cuéntanos sobre ti</h1>
+    <p class="auth-card-subtitle">
+      Esto nos ayuda a mostrarte el contenido más relevante para tu carrera y semestre.
+    </p>
+
+    <form action="dashboard.html" method="GET">
+      <div class="form-group">
+        <label for="carrera" class="form-label">Carrera *</label>
+        <select id="carrera" name="carrera" class="form-select" required>
+          <option value="" disabled selected>Selecciona tu carrera</option>
+          <option value="sistemas">Ingeniería de Sistemas</option>
+          <option value="industrial">Ingeniería Industrial</option>
+          <option value="civil">Ingeniería Civil</option>
+          <option value="mecanica">Ingeniería Mecánica</option>
+          <option value="quimica">Ingeniería Química</option>
+          <option value="electronica">Ingeniería Electrónica</option>
+          <option value="arquitectura">Arquitectura</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Semestre actual *</label>
+        <div class="semesters-grid" role="radiogroup" aria-label="Semestre actual">
+          <button type="button" class="semester-btn" data-semester="1">1</button>
+          <button type="button" class="semester-btn" data-semester="2">2</button>
+          <button type="button" class="semester-btn" data-semester="3">3</button>
+          <button type="button" class="semester-btn" data-semester="4">4</button>
+          <button type="button" class="semester-btn" data-semester="5">5</button>
+          <button type="button" class="semester-btn active" data-semester="6">6</button>
+          <button type="button" class="semester-btn" data-semester="7">7</button>
+          <button type="button" class="semester-btn" data-semester="8">8</button>
+          <button type="button" class="semester-btn" data-semester="9">9</button>
+          <button type="button" class="semester-btn" data-semester="10">10</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top: 20px;">Continuar al inicio</button>
+    </form>
+
+    <div class="auth-card-footer" style="font-size: 0.78rem;">
+      Podrás editar esta información desde tu perfil en cualquier momento.
+    </div>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

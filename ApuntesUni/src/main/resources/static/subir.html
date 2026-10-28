@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subir archivo — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="dashboard.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+
+        <div class="header-search">
+          <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <input type="search" placeholder="Busca por título o palabra clave..." aria-label="Buscar archivos">
+        </div>
+      </div>
+
+      <nav class="header-nav" aria-label="Navegación principal">
+        <a href="dashboard.html" class="nav-link">Inicio</a>
+        <a href="mis-materias.html" class="nav-link">Mis materias</a>
+        <a href="notificaciones.html" class="nav-link">Notificaciones</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="subir.html" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 7px 16px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          Subir
+        </a>
+
+        <a href="notificaciones.html" class="icon-bell-btn" aria-label="Notificaciones">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notification-dot"></span>
+        </a>
+
+        <a href="perfil.html" class="user-avatar-btn" aria-label="Perfil de usuario">
+          <span class="avatar-circle">AR</span>
+          <svg class="avatar-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content main-content-narrow">
+
+    <!-- Encabezado de Página -->
+    <div style="text-align: center; margin-bottom: 32px;">
+      <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text); margin-bottom: 6px;">Subir archivo</h1>
+      <p style="font-size: 0.88rem; color: var(--color-text-muted);">El archivo quedará publicado de inmediato para toda la comunidad.</p>
+    </div>
+
+    <form id="uploadForm" action="dashboard.html" method="GET">
+
+      <!-- Paso 1: Selecciona el archivo -->
+      <section class="upload-card-step">
+        <div class="step-header">
+          <span id="stepBadge1" class="step-badge done">✓</span>
+          <span>Selecciona el archivo</span>
+        </div>
+
+        <!-- Vista vacía (oculta al estar cargado) -->
+        <div id="dropzoneEmpty" class="dropzone" style="display: none;" onclick="seleccionarArchivoDemo()">
+          <input type="file" id="fileInput" accept=".pdf,.docx,.jpg,.jpeg,.png" style="display: none;">
+          <div style="width: 44px; height: 44px; margin: 0 auto 10px auto; background-color: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          </div>
+          <p style="font-size: 0.95rem; font-weight: 600; color: var(--color-text); margin-bottom: 4px;">
+            Arrastra tu archivo o <span style="color: var(--color-primary); text-decoration: underline;">haz clic para seleccionar</span>
+          </p>
+          <p style="font-size: 0.78rem; color: var(--color-text-muted);">PDF, DOCX, JPG, PNG · Máximo 10 MB</p>
+        </div>
+
+        <!-- Vista Rellena (como en captura Figma 9/17) -->
+        <div id="dropzoneFilled" class="dropzone-filled">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background-color: #dcfce7; color: #16a34a; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+              ✓
+            </div>
+            <div>
+              <div id="uploadedFileName" style="font-size: 0.9rem; font-weight: 600; color: var(--color-text);">DiagramaClases_PaginaWeb.png</div>
+              <div id="uploadedFileSize" style="font-size: 0.75rem; color: var(--color-text-muted);">93 KB · PNG</div>
+            </div>
+          </div>
+          <button type="button" onclick="cambiarArchivo()" style="background: none; border: none; color: var(--color-primary); font-size: 0.82rem; cursor: pointer; text-decoration: underline;">
+            Cambiar
+          </button>
+        </div>
+      </section>
+
+      <!-- Paso 2: Selecciona la materia -->
+      <section class="upload-card-step">
+        <div class="step-header">
+          <span id="stepBadge2" class="step-badge done">✓</span>
+          <span>Selecciona la materia</span>
+        </div>
+        <select id="materiaSelect" class="form-select" required>
+          <option value="">Selecciona la materia</option>
+          <option value="calculo1" selected>Cálculo I</option>
+          <option value="fisica1">Física I</option>
+          <option value="algebra">Álgebra Lineal</option>
+          <option value="quimica">Química General</option>
+          <option value="programacion1">Programación I</option>
+          <option value="estadistica">Estadística</option>
+        </select>
+      </section>
+
+      <!-- Paso 3: Descripción del archivo -->
+      <section class="upload-card-step">
+        <div class="step-header" style="justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span id="stepBadge3" class="step-badge done">✓</span>
+            <span>Descripción del archivo</span>
+          </div>
+          <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-danger); background-color: #fee2e2; padding: 2px 8px; border-radius: 4px;">
+            Obligatorio
+          </span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 6px;">
+          <label for="descArchivo">Describe el contenido de esta imagen</label>
+          <span id="charCounter">177/300</span>
+        </div>
+
+        <textarea id="descArchivo" class="form-textarea" rows="4" maxlength="300" required placeholder="Selecciona un archivo en el paso 1 para continuar...">Diagrama de Clases de la Pagina Web Apuntes UNI, donde se visualizan las clases Usuario, Archivo, etc. (Al ser un archivo PNG, se debe de realizar una descripcion detallada)</textarea>
+
+        <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 8px;">
+          Como es una imagen, esta descripción es la única forma de que otros estudiantes sepan lo que contiene.
+        </p>
+      </section>
+
+      <!-- Botones de Acción -->
+      <div style="display: flex; gap: 14px; margin-top: 24px;">
+        <a href="dashboard.html" class="btn btn-outline" style="flex: 1; padding: 12px;">Cancelar</a>
+        <button type="submit" id="btnPublicar" class="btn btn-primary" style="flex: 1; padding: 12px;">Publicar archivo</button>
+      </div>
+
+    </form>
+
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    function cambiarArchivo() {
+      document.getElementById('dropzoneFilled').style.display = 'none';
+      document.getElementById('dropzoneEmpty').style.display = 'block';
+      document.getElementById('stepBadge1').classList.remove('done');
+      document.getElementById('stepBadge1').classList.add('pending');
+      document.getElementById('stepBadge1').textContent = '1';
+    }
+
+    function seleccionarArchivoDemo() {
+      document.getElementById('dropzoneEmpty').style.display = 'none';
+      document.getElementById('dropzoneFilled').style.display = 'flex';
+      document.getElementById('stepBadge1').classList.add('done');
+      document.getElementById('stepBadge1').textContent = '✓';
+    }
+
+    const desc = document.getElementById('descArchivo');
+    const counter = document.getElementById('charCounter');
+    if (desc && counter) {
+      desc.addEventListener('input', () => {
+        counter.textContent = desc.value.length + '/300';
+      });
+    }
+  </script>
+</body>
+</html>

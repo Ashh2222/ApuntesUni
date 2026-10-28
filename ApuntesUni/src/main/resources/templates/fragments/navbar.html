@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+<header th:fragment="navbar" class="app-header">
+    <div class="header-container">
+        <div class="header-left">
+            <a th:href="@{/dashboard}" class="brand-logo" aria-label="Inicio Apuntes UNI">
+                <span class="brand-icon">U</span>
+                <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+            </a>
+
+            <form th:action="@{/buscar}" method="get" class="header-search" style="margin: 0;">
+                <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+                <input type="search" name="query" placeholder="Busca por título o palabra clave..." aria-label="Buscar archivos">
+            </form>
+        </div>
+
+        <nav class="header-nav" aria-label="Navegación principal">
+            <a th:href="@{/dashboard}" class="nav-link">Inicio</a>
+            <a th:href="@{/mis-materias}" class="nav-link">Mis materias</a>
+            <a th:href="@{/buscar}" class="nav-link">Explorar</a>
+            <a th:href="@{/notificaciones}" class="nav-link">Notificaciones</a>
+        </nav>
+
+        <div class="header-actions">
+            <!-- Botón Subir para usuarios autenticados -->
+            <a sec:authorize="isAuthenticated()" th:href="@{/subir}" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 7px 16px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                Subir
+            </a>
+
+            <!-- Campana de notificaciones -->
+            <a sec:authorize="isAuthenticated()" th:href="@{/notificaciones}" class="icon-bell-btn" aria-label="Notificaciones">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span th:if="${unreadCount != null and unreadCount > 0}" class="notification-dot"></span>
+            </a>
+
+            <!-- Menú de Usuario desplegable -->
+            <div sec:authorize="isAuthenticated()" style="position: relative;" class="user-menu-dropdown">
+                <a th:href="@{/perfil}" class="user-avatar-btn" style="text-decoration: none;">
+                    <span class="avatar-circle" th:text="${#authentication.principal instanceof T(com.university.website.security.CustomUserDetails) ? #authentication.principal.initials : 'U'}">U</span>
+                    <svg class="avatar-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </a>
+            </div>
+
+            <!-- Accesos para Invitados / Anónimos -->
+            <div sec:authorize="isAnonymous()" style="display: flex; gap: 10px; align-items: center;">
+                <a th:href="@{/login}" class="btn btn-secondary btn-sm" style="border-radius: 20px;">Iniciar sesión</a>
+                <a th:href="@{/registro}" class="btn btn-primary btn-sm" style="border-radius: 20px;">Registrarse</a>
+            </div>
+
+            <!-- Botón de Logout directo -->
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="margin: 0; display: inline;">
+                <button type="submit" class="btn btn-secondary btn-sm" style="border-radius: 20px; padding: 6px 12px; font-size: 0.8rem;" title="Cerrar sesión">
+                    Salir
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+</body>
+</html>

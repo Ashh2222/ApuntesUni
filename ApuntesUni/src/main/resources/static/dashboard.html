@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard / Catálogo — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="dashboard.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+
+        <div class="header-search">
+          <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <input type="search" placeholder="Busca por título o palabra clave..." aria-label="Buscar archivos">
+        </div>
+      </div>
+
+      <nav class="header-nav" aria-label="Navegación principal">
+        <a href="dashboard.html" class="nav-link active">Inicio</a>
+        <a href="mis-materias.html" class="nav-link">Mis materias</a>
+        <a href="notificaciones.html" class="nav-link">Notificaciones</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="subir.html" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 7px 16px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          Subir
+        </a>
+
+        <a href="notificaciones.html" class="icon-bell-btn" aria-label="Ver 2 notificaciones nuevas">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notification-dot"></span>
+        </a>
+
+        <div style="position: relative;">
+          <a href="perfil.html" class="user-avatar-btn" aria-label="Perfil de Ana">
+            <span class="avatar-circle">AR</span>
+            <svg class="avatar-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+
+    <!-- Saludo al usuario -->
+    <section class="greeting-section">
+      <h1 class="greeting-title">Hola, Ana 👋</h1>
+      <p class="greeting-subtitle">Ingeniería de Sistemas · Semestre 6</p>
+    </section>
+
+    <!-- 3 Tarjetas de Estadísticas -->
+    <section class="dashboard-stats-grid" aria-label="Estadísticas de usuario">
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background-color: #ecfdf5; color: #10b981;">
+          📚
+        </div>
+        <div class="stat-card-number">5</div>
+        <div class="stat-card-label">Materias inscritas</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background-color: #eff6ff; color: #3b82f6;">
+          📥
+        </div>
+        <div class="stat-card-number">23</div>
+        <div class="stat-card-label">Archivos descargados</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-icon" style="background-color: #eff6ff; color: #3b82f6;">
+          📤
+        </div>
+        <div class="stat-card-number">4</div>
+        <div class="stat-card-label">Archivos subidos</div>
+      </div>
+    </section>
+
+    <!-- Catálogo de Materias -->
+    <section style="margin-bottom: 40px;">
+      <div class="section-header">
+        <h2 class="section-title">Catálogo de materias</h2>
+        <a href="mis-materias.html" style="font-size: 0.88rem; font-weight: 600;">Ver mis materias →</a>
+      </div>
+
+      <div class="catalog-grid">
+        <a href="buscar.html?materia=calculo1" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code">MA101</span>
+            <span>142 archivos</span>
+          </div>
+          <div class="catalog-subject-name">Cálculo I</div>
+        </a>
+
+        <a href="buscar.html?materia=fisica1" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code">FI101</span>
+            <span>98 archivos</span>
+          </div>
+          <div class="catalog-subject-name">Física I</div>
+        </a>
+
+        <a href="buscar.html?materia=algebra" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code">MA102</span>
+            <span>67 archivos</span>
+          </div>
+          <div class="catalog-subject-name">Álgebra Lineal</div>
+        </a>
+
+        <a href="buscar.html?materia=quimica" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code">QU101</span>
+            <span>84 archivos</span>
+          </div>
+          <div class="catalog-subject-name">Química General</div>
+        </a>
+
+        <a href="buscar.html?materia=programacion1" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code">CS101</span>
+            <span>115 archivos</span>
+          </div>
+          <div class="catalog-subject-name">Programación I</div>
+        </a>
+
+        <a href="buscar.html?materia=estadistica" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code">MA201</span>
+            <span>55 archivos</span>
+          </div>
+          <div class="catalog-subject-name">Estadística</div>
+        </a>
+
+        <a href="buscar.html?materia=circuitos" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code">EL101</span>
+            <span>43 archivos</span>
+          </div>
+          <div class="catalog-subject-name">Circuitos Eléctricos</div>
+        </a>
+
+        <a href="buscar.html?materia=resistencia" class="catalog-subject-card">
+          <div class="catalog-subject-top">
+            <span class="catalog-subject-code">CI201</span>
+            <span>37 archivos</span>
+          </div>
+          <div class="catalog-subject-name">Resistencia de Materiales</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Tabs y Filtros -->
+    <section>
+      <div class="section-header" style="margin-bottom: 16px;">
+        <div class="tabs-nav" data-tabs>
+          <button class="tab-btn active" data-tab-target="tabRecientes">Recientes</button>
+          <button class="tab-btn" data-tab-target="tabPopulares">Populares</button>
+        </div>
+        <a href="buscar.html" style="font-size: 0.88rem; font-weight: 600;">Ver todos →</a>
+      </div>
+
+      <!-- Banner explicativo de badges -->
+      <div class="notice-banner">
+        <span style="font-size: 1.1rem; line-height: 1;">★</span>
+        <div>
+          Los archivos marcados como <strong>Apuntes de docente</strong> son subidos por profesores en sus materias especializadas. Los marcados como <strong>Autor destacado</strong> son de estudiantes con calificación promedio ≥ 4.5.
+        </div>
+      </div>
+
+      <!-- Grid de Archivos Recientes -->
+      <div id="tabRecientes" class="files-grid" data-tab-content>
+        <!-- Card 1 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span class="badge badge-destacado">★ Autor destacado</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">2.1 MB</span>
+          </div>
+          <h3 class="file-card-title">Resumen completo: Integral definida con ejercicios resueltos</h3>
+          <p class="file-card-meta">Cálculo I · Integral definida</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(64)</span></div>
+            <div class="downloads-count">↓ 412</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Carlos Mendoza</span>
+            <span>15 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span class="badge badge-destacado">★ Autor destacado</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">1.4 MB</span>
+          </div>
+          <h3 class="file-card-title">Resumen: Transformaciones lineales y subespacios</h3>
+          <p class="file-card-meta">Álgebra Lineal · Transformaciones lineales</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(43)</span></div>
+            <div class="downloads-count">↓ 287</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Valeria Soto</span>
+            <span>12 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span class="badge badge-docente">🎓 Apuntes de docente</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">3.8 MB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes de cinemática — semana 5 con esquemas</h3>
+          <p class="file-card-meta">Física I · Cinemática</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(37)</span></div>
+            <div class="downloads-count">↓ 198</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Diego Paredes</span>
+            <span>10 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span class="badge badge-pdf">PDF</span>
+            </div>
+            <span class="file-card-meta">980 KB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes Semana 9: Termodinámica básica</h3>
+          <p class="file-card-meta">Química General · Termodinámica</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★☆ <span class="vote-count">(28)</span></div>
+            <div class="downloads-count">↓ 156</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Ana Romero</span>
+            <span>8 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 5 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span class="badge badge-destacado">★ Autor destacado</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-docx">DOCX</span>
+            <span class="file-card-meta">1.2 MB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes Programación I — Arreglos y recursión</h3>
+          <p class="file-card-meta">Programación I · Arreglos y recursión</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(52)</span></div>
+            <div class="downloads-count">↓ 334</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Luis Ríos</span>
+            <span>6 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 6 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span class="badge badge-pdf">PDF</span>
+            </div>
+            <span class="file-card-meta">1.8 MB</span>
+          </div>
+          <h3 class="file-card-title">Resumen de distribuciones de probabilidad con ejemplos</h3>
+          <p class="file-card-meta">Estadística · Probabilidad</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(31)</span></div>
+            <div class="downloads-count">↓ 201</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">María Chávez</span>
+            <span>4 ago 2025</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Grid de Archivos Populares (Data para Tab Populares) -->
+      <div id="tabPopulares" class="files-grid" data-tab-content style="display: none;">
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span class="badge badge-destacado">★ Autor destacado</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">2.1 MB</span>
+          </div>
+          <h3 class="file-card-title">Resumen completo: Integral definida con ejercicios resueltos</h3>
+          <p class="file-card-meta">Cálculo I · Integral definida</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(64)</span></div>
+            <div class="downloads-count">↓ 412</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Carlos Mendoza</span>
+            <span>15 ago 2025</span>
+          </div>
+        </a>
+
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <div class="file-badges-left">
+              <span class="badge badge-destacado">★ Autor destacado</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-docx">DOCX</span>
+            <span class="file-card-meta">1.2 MB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes Programación I — Arreglos y recursión</h3>
+          <p class="file-card-meta">Programación I · Arreglos y recursión</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(52)</span></div>
+            <div class="downloads-count">↓ 334</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Luis Ríos</span>
+            <span>6 ago 2025</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Botón Flotante Subir Archivo -->
+  <a href="subir.html" class="btn-floating" aria-label="Subir un nuevo archivo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    Subir archivo
+  </a>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

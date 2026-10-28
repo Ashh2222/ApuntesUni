@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis materias — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content main-content-narrow">
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 1.6rem; font-weight: 700; color: var(--color-text); margin-bottom: 6px;">Mis materias</h1>
+      <p style="font-size: 0.9rem; color: var(--color-text-muted);">Gestiona tus inscripciones a materias para acceder rápidamente a sus apuntes.</p>
+    </div>
+
+    <!-- Barra de pestañas y búsqueda -->
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+      <div class="tabs-nav" style="background: none; padding: 0; gap: 6px;">
+        <button type="button" id="tabInscritas" class="tab-btn active" style="border: 1px solid var(--color-border); border-radius: 8px; padding: 8px 16px;" onclick="mostrarTab('inscritas')">
+          Inscritas (<span th:text="${#lists.size(enrolledSubjects)}">0</span>)
+        </button>
+        <button type="button" id="tabDisponibles" class="tab-btn" style="border: 1px solid var(--color-border); border-radius: 8px; padding: 8px 16px;" onclick="mostrarTab('disponibles')">
+          Disponibles para inscribir (<span th:text="${#lists.size(availableSubjects)}">0</span>)
+        </button>
+      </div>
+
+      <div style="position: relative; max-width: 260px; width: 100%;">
+        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; fill: var(--color-text-muted);" viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+        <input type="text" id="filtroMateriaInput" oninput="filtrarPorTexto()" placeholder="Buscar materia..." class="form-input" style="padding-left: 36px; border-radius: 20px; font-size: 0.85rem;">
+      </div>
+    </div>
+
+    <!-- Lista de Materias Inscritas -->
+    <div id="seccionInscritas" class="subject-list">
+      <div th:if="${#lists.isEmpty(enrolledSubjects)}" style="text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
+        <p style="color: #64748b;">Aún no estás inscrito en ninguna materia.</p>
+        <button type="button" onclick="mostrarTab('disponibles')" class="btn btn-primary btn-sm" style="margin-top: 10px; border-radius: 20px;">Inscribir materias ahora</button>
+      </div>
+
+      <div th:each="s : ${enrolledSubjects}" class="subject-item-card materia-card" data-tipo="inscrita">
+        <div class="subject-item-left">
+          <span class="badge-materia-code" th:text="${#strings.substring(s.code, 0, 2)}">MA</span>
+          <div>
+            <a th:href="@{/buscar(subjectId=${s.id})}" class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text); text-decoration: none;" th:text="${s.name}">Cálculo I</a>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);" th:text="${s.code} + ' · ' + ${s.credits} + ' créditos'">MA101 · 4 créditos</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <a th:href="@{/buscar(subjectId=${s.id})}" class="btn btn-secondary btn-sm" style="border-radius: 6px;">Ver apuntes</a>
+          <form th:action="@{/mis-materias/baja}" method="post" style="margin: 0;" onsubmit="return confirm('¿Deseas dar de baja esta materia?');">
+            <input type="hidden" name="subjectId" th:value="${s.id}">
+            <button type="submit" class="btn btn-outline btn-sm" style="border-radius: 6px; color: #dc2626; border-color: #fecaca;">Dar de baja</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Materias Disponibles -->
+    <div id="seccionDisponibles" class="subject-list" style="display: none;">
+      <div th:if="${#lists.isEmpty(availableSubjects)}" style="text-align: center; padding: 40px; color: #64748b;">
+        Ya estás inscrito en todas las materias activas del catálogo.
+      </div>
+
+      <div th:each="s : ${availableSubjects}" class="subject-item-card materia-card" data-tipo="disponible">
+        <div class="subject-item-left">
+          <span class="badge-materia-code" style="background-color: #f1f5f9; color: #475569;" th:text="${#strings.substring(s.code, 0, 2)}">MA</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);" th:text="${s.name}">Física II</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);" th:text="${s.code} + ' · ' + ${s.credits} + ' créditos'">FI102 · 4 créditos</div>
+          </div>
+        </div>
+        <form th:action="@{/mis-materias/inscribir}" method="post" style="margin: 0;">
+          <input type="hidden" name="subjectId" th:value="${s.id}">
+          <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 6px; padding: 6px 14px;">+ Inscribirme</button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+  <script>
+    function mostrarTab(tipo) {
+      const tabInscritas = document.getElementById('tabInscritas');
+      const tabDisponibles = document.getElementById('tabDisponibles');
+      const secInscritas = document.getElementById('seccionInscritas');
+      const secDisponibles = document.getElementById('seccionDisponibles');
+
+      if (tipo === 'inscritas') {
+        tabInscritas.classList.add('active');
+        tabDisponibles.classList.remove('active');
+        secInscritas.style.display = 'flex';
+        secDisponibles.style.display = 'none';
+      } else {
+        tabInscritas.classList.remove('active');
+        tabDisponibles.classList.add('active');
+        secInscritas.style.display = 'none';
+        secDisponibles.style.display = 'flex';
+      }
+      filtrarPorTexto();
+    }
+
+    function filtrarPorTexto() {
+      const q = document.getElementById('filtroMateriaInput').value.toLowerCase();
+      document.querySelectorAll('.materia-card').forEach(card => {
+        const nombre = card.querySelector('.subject-name').textContent.toLowerCase();
+        card.style.display = nombre.includes(q) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración de cuenta — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content main-content-narrow">
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text); margin-bottom: 24px;">
+      Configuración de cuenta
+    </h1>
+
+    <!-- 1. Notificaciones -->
+    <section class="detail-card" style="margin-bottom: 20px;">
+      <h2 style="font-size: 1.05rem; font-weight: 700; color: var(--color-text); margin-bottom: 14px;">Preferencias de Notificaciones</h2>
+
+      <form th:action="@{/configuracion/notificaciones}" method="post">
+        <div class="switch-row">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Notificaciones por correo</div>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">Recibir avisos en tu bandeja de entrada universitaria.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" name="emailNotifications" value="true" th:checked="${settings.emailNotifications}">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="switch-row">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Alertas de comentarios</div>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">Avisarme cuando otros estudiantes comenten en mis apuntes.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" name="commentAlerts" value="true" th:checked="${settings.commentAlerts}">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="switch-row">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Alertas de calificaciones</div>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">Avisarme cuando valoren o puntúen mis archivos.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" name="ratingAlerts" value="true" th:checked="${settings.ratingAlerts}">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="switch-row">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Alertas de nuevas publicaciones en mis materias</div>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">Te avisamos cuando suban material nuevo en tus materias inscritas.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" name="subjectAlerts" value="true" th:checked="${settings.subjectAlerts}">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+          <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 6px; padding: 7px 16px;">Guardar preferencias</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 2. Cambiar contraseña -->
+    <section class="detail-card" style="margin-bottom: 20px;">
+      <h2 style="font-size: 1.05rem; font-weight: 700; color: var(--color-text); margin-bottom: 18px;">Seguridad: Cambiar contraseña</h2>
+
+      <form th:action="@{/configuracion/password}" method="post" th:object="${passwordDto}">
+        <div class="form-group">
+          <label for="current_pw" class="form-label">Contraseña actual</label>
+          <input type="password" id="current_pw" th:field="*{currentPassword}" class="form-input" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+          <label for="new_pw" class="form-label">Nueva contraseña</label>
+          <input type="password" id="new_pw" th:field="*{newPassword}" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm_new_pw" class="form-label">Confirmar nueva contraseña</label>
+          <input type="password" id="confirm_new_pw" th:field="*{confirmPassword}" class="form-input" placeholder="Repite la nueva contraseña" minlength="8" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 6px;">Actualizar contraseña</button>
+      </form>
+    </section>
+
+    <!-- 3. Cierre de sesión -->
+    <section class="danger-zone-card">
+      <div style="font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 8px;">
+        Sesión activa
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+        <div>
+          <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--color-text); margin-bottom: 4px;">Cerrar sesión en este dispositivo</h3>
+          <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.4;">
+            Finalizará tu sesión actual de forma segura.
+          </p>
+        </div>
+        <form th:action="@{/logout}" method="post" style="margin: 0;">
+          <button type="submit" class="btn btn-outline" style="border-radius: 6px;">Cerrar sesión</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

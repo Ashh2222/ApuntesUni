@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crea tu cuenta — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+
+  <header class="auth-header">
+    <a th:href="@{/}" class="brand-logo" aria-label="Inicio Apuntes UNI">
+      <span class="brand-icon">U</span>
+      <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+    </a>
+  </header>
+
+  <main class="auth-card">
+    <h1 class="auth-card-title">Crea tu cuenta</h1>
+    <p class="auth-card-subtitle">Es gratis y siempre lo será.</p>
+
+    <!-- Alertas Flash -->
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <form th:action="@{/registro}" method="post" th:object="${registrationDto}">
+      <div class="form-group">
+        <label for="fullName" class="form-label">Nombre completo</label>
+        <input type="text" id="fullName" th:field="*{fullName}" class="form-input" placeholder="Ej. Ana Lucía Romero" required>
+        <div th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" style="color: #dc2626; font-size: 0.8rem; margin-top: 4px;"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input type="email" id="email" th:field="*{email}" class="form-input" placeholder="correo@uni.edu.pe" required>
+        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: #dc2626; font-size: 0.8rem; margin-top: 4px;"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" id="password" th:field="*{password}" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
+        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: #dc2626; font-size: 0.8rem; margin-top: 4px;"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
+        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-input" placeholder="Repite la contraseña" minlength="8" required>
+        <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color: #dc2626; font-size: 0.8rem; margin-top: 4px;"></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top: 8px;">Crear cuenta</button>
+    </form>
+
+    <div class="auth-card-footer">
+      ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a>
+    </div>
+  </main>
+
+  <footer class="auth-legal">
+    Al registrarte aceptas los Términos de Uso y la Política de Privacidad de Apuntes UNI.
+  </footer>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

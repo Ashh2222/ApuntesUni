@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crea tu cuenta — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+
+  <header class="auth-header">
+    <a href="index.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+      <span class="brand-icon">U</span>
+      <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+    </a>
+  </header>
+
+  <main class="auth-card">
+    <h1 class="auth-card-title">Crea tu cuenta</h1>
+    <p class="auth-card-subtitle">Es gratis y siempre lo será.</p>
+
+    <form action="onboarding.html" method="GET">
+      <div class="form-group">
+        <label for="nombre" class="form-label">Nombre completo</label>
+        <input type="text" id="nombre" name="nombre" class="form-input" placeholder="Ej. Ana Lucía Romero" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input type="email" id="email" name="email" class="form-input" placeholder="correo@uni.edu.pe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" id="password" name="password" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm_password" class="form-label">Confirmar contraseña</label>
+        <input type="password" id="confirm_password" name="confirm_password" class="form-input" placeholder="Repite la contraseña" minlength="8" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top: 8px;">Crear cuenta</button>
+    </form>
+
+    <div class="auth-card-footer">
+      ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+    </div>
+  </main>
+
+  <footer class="auth-legal">
+    Al registrarte aceptas los Términos de Uso y la Política de Privacidad.
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentación Técnica: Diagrama de Clases y Modelo Java — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    .doc-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px 24px;
+    }
+    .doc-hero {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      margin-bottom: 36px;
+      box-shadow: var(--shadow-sm);
+    }
+    .doc-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+    .doc-subtitle {
+      font-size: 1.05rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+    .doc-section {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+    .doc-section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid var(--color-primary-light);
+      padding-bottom: 10px;
+    }
+    .func-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 18px;
+      background: #fafbfc;
+      transition: border-color 0.2s;
+    }
+    .func-card:hover {
+      border-color: var(--color-primary);
+    }
+    .func-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .func-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 16px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .code-keyword { color: #f43f5e; font-weight: 600; }
+    .code-type { color: #38bdf8; font-weight: 600; }
+    .code-func { color: #fbbf24; }
+    .code-comment { color: #64748b; font-style: italic; }
+    .code-string { color: #34d399; }
+    .code-annotation { color: #a855f7; }
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .grid-2col { grid-template-columns: 1fr; }
+    }
+    .badge-relation {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Compartido -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="index.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+      </div>
+      <nav class="header-nav">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="buscar.html" class="nav-link">Buscar</a>
+        <a href="archivo.html" class="nav-link">Archivo</a>
+        <a href="subir.html" class="nav-link">Subir</a>
+        <a href="admin-materias.html" class="nav-link">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="doc-container">
+
+    <!-- Hero / Presentación -->
+    <div class="doc-hero">
+      <span class="badge badge-pill-soft" style="margin-bottom: 12px;">Arquitectura de Software MVC</span>
+      <h1 class="doc-title">Adaptación del Diagrama de Clases & Modelo Java Conceptual</h1>
+      <p class="doc-subtitle">
+        Documentación técnica completa que vincula de manera biunívoca el <strong>Diagrama de Clases UML proporcionado</strong> con las <strong>20 funcionalidades del Banco de Apuntes UNI</strong>, acompañado de la implementación conceptual de las clases Java correspondientes con atributos, visibilidad, getters, setters, métodos de negocio y multiplicidades.
+      </p>
+    </div>
+
+    <!-- SECCIÓN 1: MAPEO DE LAS 20 FUNCIONALIDADES CON EL DIAGRAMA -->
+    <section class="doc-section">
+      <h2 class="doc-section-title">
+        <span>📋</span> 1. Mapeo de las 20 Funcionalidades en el Diagrama de Clases
+      </h2>
+      <p style="color: var(--color-text-muted); font-size: 0.92rem; margin-bottom: 24px;">
+        A continuación se verifica cada una de las 20 funciones requeridas en el sistema, indicando qué DEBE hacer la página web, qué datos retorna y qué clases/métodos del diagrama se encargan de ejecutarla.
+      </p>
+
+      <!-- Funcionalidad 1 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">1. Registro de cuenta</span>
+          <span class="badge badge-role-estudiante">Clase: User / Student</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>registro.html</code>, validar que el correo termine en <code>@uni.edu.pe</code>, que la clave tenga mínimo 8 caracteres y crear el usuario en estado activo.</p>
+        <p><strong>Método en el Modelo:</strong> <code>User.register()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>id, fullName, email, role: STUDENT, active: true, joinDate</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Soportado de forma nativa por la clase abstracta <code>User</code> y su método <code>+register()</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 2 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">2. Inicio de sesión (Login)</span>
+          <span class="badge badge-role-estudiante">Clase: User</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>login.html</code>, autenticar credenciales y dar acceso a <code>dashboard.html</code>.</p>
+        <p><strong>Método en el Modelo:</strong> <code>User.login()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>autenticado: true, user: {email, fullName, role, profileVisibility}, tokenSesion</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Soportado por el método <code>+login()</code> de la clase <code>User</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 3 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">3. Recuperación de contraseña vía correo</span>
+          <span class="badge badge-destacado">Clases: User & RecoveryToken</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>recuperar-password.html</code>, generar un token único con expiración y remitir el enlace de acceso temporal al correo institucional.</p>
+        <p><strong>Métodos en el Modelo:</strong> <code>User.resetPassword()</code>, <code>RecoveryToken.generate()</code>, <code>RecoveryToken.validate()</code>, <code>RecoveryToken.isExpired()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>tokenGenerado, creationDate, expirationDate, used: false</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Modelado explícitamente en la clase <code>RecoveryToken</code> (relación <code>requests</code> 1 a 0..* con <code>User</code>).</p>
+      </div>
+
+      <!-- Funcionalidad 4 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">4. Configuración inicial de perfil (Onboarding)</span>
+          <span class="badge badge-role-estudiante">Clase: Student</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>onboarding.html</code>, asociar al estudiante su <code>academicProgram</code> y su <code>semester</code> (1 al 10).</p>
+        <p><strong>Métodos en el Modelo:</strong> <code>User.editProfile()</code>, <code>Student.setAcademicProgram()</code>, <code>Student.setSemester()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>semester, academicProgram.name, studyingSecondaryProgram</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Soportado por la subclase <code>Student</code> y sus asociaciones <code>studies</code> y <code>secondary program</code> con <code>AcademicProgram</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 5 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">5. Edición de perfil propio</span>
+          <span class="badge badge-role-estudiante">Clase: User / Student</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>perfil.html</code>, conmutar a inputs editables y guardar cambios en nombre, carrera y semestre.</p>
+        <p><strong>Método en el Modelo:</strong> <code>User.editProfile()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>fullName, semester, academicProgram</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Método <code>+editProfile()</code> en <code>User</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 6 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">6. Configuración de privacidad del perfil</span>
+          <span class="badge badge-docente">Clase: User & Enum ProfileVisibility</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>configuracion.html</code>, cambiar la visibilidad entre <code>PUBLIC</code>, <code>STUDENTS_ONLY</code> y <code>PRIVATE</code>.</p>
+        <p><strong>Método en el Modelo:</strong> <code>User.setProfileVisibility(ProfileVisibility)</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>profileVisibility: ProfileVisibility</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Atributo <code>profileVisibility</code> en <code>User</code> basado en la enumeración <code>ProfileVisibility</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 7 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">7. Configuración de notificaciones</span>
+          <span class="badge badge-pill-soft">Clase: NotificationSettings</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>configuracion.html</code>, activar/desactivar notificaciones por correo y alertas de materias.</p>
+        <p><strong>Método en el Modelo:</strong> <code>NotificationSettings.updatePreferences()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>emailNotifications: boolean, subjectAlerts: boolean</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Clase <code>NotificationSettings</code> asociada 1 a 1 (<code>has</code>) con <code>User</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 8 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">8. Eliminación de cuenta</span>
+          <span class="badge badge-pdf">Clase: User</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>configuracion.html</code> ("Zona de peligro"), dar de baja la cuenta (soft-delete preservando notas).</p>
+        <p><strong>Método en el Modelo:</strong> <code>User.deleteAccount()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>active: false</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Método <code>+deleteAccount()</code> y atributo booleano <code>active</code> en <code>User</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 9 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">9. Búsqueda de archivos (Notes)</span>
+          <span class="badge badge-role-estudiante">Clases: Note, Subject, Topic</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> Buscar por título o tema priorizando notas con estatus <code>VISIBLE</code>.</p>
+        <p><strong>Método en el Modelo:</strong> Consultas de lectura sobre <code>Note</code> con filtros por <code>title</code> y <code>topic</code>.</p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>List&lt;Note&gt; (title, sizeInMb, format, subject, uploader, uploadDate, status)</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Entidad <code>Note</code> con relaciones a <code>Subject</code> y <code>Topic</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 10 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">10. Filtrado por materia y rango de fechas</span>
+          <span class="badge badge-role-estudiante">Clase: Note & Subject</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>buscar.html</code>, filtrar el listado por <code>Subject.name/code</code> y <code>Note.uploadDate</code>.</p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>conteo, List&lt;Note&gt; filtradas</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Atributos <code>Note.subject</code> y <code>Note.uploadDate</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 11 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">11. Catálogo de materias con conteo</span>
+          <span class="badge badge-docente">Clase: Subject</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> Mostrar el catálogo de cursos con código, nombre y total de apuntes disponibles.</p>
+        <p><strong>Método en el Modelo:</strong> <code>Subject.getNoteCount() : int</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>name, code, getNoteCount(): int</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Método <code>+getNoteCount() : int</code> especificado en <code>Subject</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 12 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">12. Vista previa de archivos</span>
+          <span class="badge badge-pill-soft">Clase: Note & Enum FileFormat</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>archivo.html</code>, visualizar número de páginas (<code>pageCount</code>), tamaño (<code>sizeInMb</code>) y formato.</p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>pageCount: int, sizeInMb: float, format: FileFormat</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Atributos explícitos <code>pageCount</code>, <code>sizeInMb</code> y <code>format</code> en <code>Note</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 13 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">13. Subida de archivos con validación (10MB)</span>
+          <span class="badge badge-destacado">Clase: Note</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>subir.html</code>, validar que el formato pertenezca al enum <code>FileFormat</code> y que <code>sizeInMb &lt;= 10.0</code>.</p>
+        <p><strong>Método en el Modelo:</strong> <code>Note.upload()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>Note creada (title, format, sizeInMb, uploadDate, status: VISIBLE)</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Método <code>+upload()</code> en <code>Note</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 14 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">14. Descripción obligatoria del archivo</span>
+          <span class="badge badge-role-estudiante">Clase: Note</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> Requerir descripción descriptiva del contenido (especialmente para imágenes JPG/PNG).</p>
+        <p><strong>Atributo en el Modelo:</strong> <code>Note.description: String</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Atributo <code>+String description</code> en <code>Note</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 15 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">15. Descarga de archivos y registro</span>
+          <span class="badge badge-pill-soft">Clases: Note & Download</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> Al pulsar "Descargar PDF", iniciar la bajada y registrar la transacción de descarga.</p>
+        <p><strong>Métodos en el Modelo:</strong> <code>Note.download()</code>, <code>Download.register()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>Download { date, user, note }</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Clase <code>Download</code> con método <code>+register()</code> y método <code>+download()</code> en <code>Note</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 16 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">16. Calificación de archivos (Estrellas)</span>
+          <span class="badge badge-destacado">Clase: Rating</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>archivo.html</code>, votar con 1 a 5 estrellas.</p>
+        <p><strong>Método en el Modelo:</strong> <code>Rating.save()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>value: int (1..5), date, user, note</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Clase <code>Rating</code> con método <code>+save()</code> y atributo <code>value: int</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 17 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">17. Comentarios comunitarios</span>
+          <span class="badge badge-role-estudiante">Clase: Comment</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> Publicar y listar opiniones al pie de cada apunte.</p>
+        <p><strong>Método en el Modelo:</strong> <code>Comment.post()</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>text, date, user, note</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Clase <code>Comment</code> con método <code>+post()</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 18 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">18. Reporte de archivos inapropiados</span>
+          <span class="badge badge-pdf">Clases: Report & Note</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> Enviar denuncia por <code>INCORRECT_CONTENT</code>, <code>PLAGIARISM</code>, <code>SPAM</code> u <code>OFFENSIVE</code>. Si acumula reportes, ocultar la nota.</p>
+        <p><strong>Métodos en el Modelo:</strong> <code>Report.submit()</code>, <code>Note.deactivateNote()</code> (cambia estado a <code>HIDDEN</code>)</p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>Report { reason, severity, date, user, note }</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Clase <code>Report</code> con método <code>+submit()</code>, enums <code>ReportReason</code> y <code>ReportSeverity</code>, y método <code>Note.deactivateNote()</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 19 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">19. Inscripción y desinscripción a materias</span>
+          <span class="badge badge-docente">Clases: Student & Enrollment</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En <code>mis-materias.html</code>, conmutar entre "Inscribirme" e "Inscrito", generando alertas de nuevo material.</p>
+        <p><strong>Métodos en el Modelo:</strong> <code>Student.enrollInSubject(Subject)</code>, <code>Student.unenrollFromSubject(Subject)</code></p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>Enrollment { enrollmentDate, student, subject }</code></p>
+        <p><strong>Soporte en el Diagrama:</strong> Métodos específicos en <code>Student</code> y entidad asociativa <code>Enrollment</code>.</p>
+      </div>
+
+      <!-- Funcionalidad 20 -->
+      <div class="func-card">
+        <div class="func-header">
+          <span class="func-name">20. Administración integral: Materias, Roles y Moderación</span>
+          <span class="badge badge-role-admin">Clases: User, Subject, Note</span>
+        </div>
+        <p><strong>Qué DEBE hacer la página:</strong> En las vistas admin: (1) CRUD de materias, (2) Asignar rol docente con especialización en materias (relación <code>specializes in</code>), (3) Restaurar o eliminar notas reportadas.</p>
+        <p><strong>Métodos en el Modelo:</strong> 
+          <code>User (role = PROFESSOR, specializes in Subject)</code>, 
+          <code>Note.restore()</code>, 
+          <code>Note.deletePermanently()</code>
+        </p>
+        <p><strong>Datos que DEBE retornar:</strong> <code>Note { status: VISIBLE }</code> o confirmación de purga definitiva.</p>
+        <p><strong>Soporte en el Diagrama:</strong> Relación <code>specializes in</code> entre <code>User</code> y <code>Subject</code>, y métodos <code>+restore()</code> y <code>+deletePermanently()</code> en <code>Note</code>.</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: IMPLEMENTACIÓN CONCEPTUAL DE LAS CLASES EN JAVA -->
+    <section class="doc-section">
+      <h2 class="doc-section-title">
+        <span>☕</span> 2. Representación Conceptual de las Clases en Java (Modelo MVC)
+      </h2>
+      <p style="color: var(--color-text-muted); font-size: 0.92rem; margin-bottom: 20px;">
+        A continuación se desarrollan en sintaxis Java todas las entidades del modelo especificadas en el diagrama de clases, con sus paquetes, enumeraciones, atributos privados con visibilidad estricta, getters, setters, constructores conceptuales y métodos de negocio.
+      </p>
+
+      <!-- 2.1 ENUMERACIONES -->
+      <h3 style="font-size: 1.15rem; color: var(--color-text); margin: 24px 0 12px 0;">2.1. Enumeraciones del Dominio</h3>
+
+      <div class="code-block">
+<span class="code-keyword">package</span> com.apuntesuni.model.enums;
+
+<span class="code-comment">/**
+ * Roles de usuario dentro de la plataforma UNI.
+ */</span>
+<span class="code-keyword">public enum</span> <span class="code-type">UserRole</span> {
+    STUDENT,
+    PROFESSOR,
+    ADMINISTRATOR
+}
+
+<span class="code-comment">/**
+ * Nivel de visibilidad configurado para el perfil del usuario.
+ */</span>
+<span class="code-keyword">public enum</span> <span class="code-type">ProfileVisibility</span> {
+    PUBLIC,
+    STUDENTS_ONLY,
+    PRIVATE
+}
+
+<span class="code-comment">/**
+ * Grado o tipo de programa académico universitario.
+ */</span>
+<span class="code-keyword">public enum</span> <span class="code-type">ProgramType</span> {
+    DEGREE,
+    SPECIALIZATION,
+    MASTERS,
+    DOCTORATE
+}
+
+<span class="code-comment">/**
+ * Formatos de archivo autorizados para la subida de material.
+ */</span>
+<span class="code-keyword">public enum</span> <span class="code-type">FileFormat</span> {
+    PDF,
+    DOCX,
+    JPG,
+    PNG,
+    JPEG
+}
+
+<span class="code-comment">/**
+ * Estado de moderación del apunte o apunte de clase.
+ */</span>
+<span class="code-keyword">public enum</span> <span class="code-type">NoteStatus</span> {
+    VISIBLE,
+    HIDDEN
+}
+
+<span class="code-comment">/**
+ * Motivo reportado por la comunidad en la denuncia de un archivo.
+ */</span>
+<span class="code-keyword">public enum</span> <span class="code-type">ReportReason</span> {
+    INCORRECT_CONTENT,
+    PLAGIARISM,
+    SPAM,
+    OFFENSIVE
+}
+
+<span class="code-comment">/**
+ * Nivel de gravedad asignado al reporte.
+ */</span>
+<span class="code-keyword">public enum</span> <span class="code-type">ReportSeverity</span> {
+    LOW,
+    MEDIUM,
+    HIGH
+}
+      </div>
+
+      <!-- 2.2 CLASE ABSTRACTA USER -->
+      <h3 style="font-size: 1.15rem; color: var(--color-text); margin: 28px 0 12px 0;">2.2. Clase Abstracta: User</h3>
+      <div class="code-block">
+<span class="code-keyword">package</span> com.apuntesuni.model;
+
+<span class="code-keyword">import</span> java.util.Date;
+<span class="code-keyword">import</span> java.util.List;
+<span class="code-keyword">import</span> com.apuntesuni.model.enums.UserRole;
+<span class="code-keyword">import</span> com.apuntesuni.model.enums.ProfileVisibility;
+
+<span class="code-comment">/**
+ * Representa la base abstracta de cualquier usuario del sistema (Estudiante, Profesor o Admin).
+ */</span>
+<span class="code-keyword">public abstract class</span> <span class="code-type">User</span> {
+
+    <span class="code-comment">// Atributos del Diagrama de Clases</span>
+    <span class="code-keyword">protected</span> <span class="code-type">String</span> fullName;
+    <span class="code-keyword">protected</span> <span class="code-type">String</span> email;
+    <span class="code-keyword">protected</span> <span class="code-type">String</span> passwordHash;
+    <span class="code-keyword">protected</span> <span class="code-type">UserRole</span> role;
+    <span class="code-keyword">protected</span> <span class="code-type">ProfileVisibility</span> profileVisibility;
+    <span class="code-keyword">protected boolean</span> active;
+    <span class="code-keyword">protected</span> <span class="code-type">Date</span> joinDate;
+
+    <span class="code-comment">// Relaciones modeladas en el diagrama</span>
+    <span class="code-keyword">protected</span> <span class="code-type">NotificationSettings</span> notificationSettings; <span class="code-comment">// 1 a 1 (has)</span>
+    <span class="code-keyword">protected</span> <span class="code-type">List</span>&lt;<span class="code-type">RecoveryToken</span>&gt; recoveryTokens;         <span class="code-comment">// 1 a 0..* (requests)</span>
+    <span class="code-keyword">protected</span> <span class="code-type">List</span>&lt;<span class="code-type">Subject</span>&gt; specializedSubjects;          <span class="code-comment">// 0..1 a 0..* (specializes in)</span>
+
+    <span class="code-comment">// Constructores conceptuales</span>
+    <span class="code-keyword">public</span> <span class="code-func">User</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-func">User</span>(<span class="code-type">String</span> fullName, <span class="code-type">String</span> email, <span class="code-type">String</span> passwordHash, <span class="code-type">UserRole</span> role) {
+        <span class="code-keyword">this</span>.fullName = fullName;
+        <span class="code-keyword">this</span>.email = email;
+        <span class="code-keyword">this</span>.passwordHash = passwordHash;
+        <span class="code-keyword">this</span>.role = role;
+        <span class="code-keyword">this</span>.profileVisibility = <span class="code-type">ProfileVisibility</span>.PUBLIC;
+        <span class="code-keyword">this</span>.active = <span class="code-keyword">true</span>;
+        <span class="code-keyword">this</span>.joinDate = <span class="code-keyword">new</span> <span class="code-type">Date</span>();
+    }
+
+    <span class="code-comment">// Getters y Setters</span>
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getFullName</span>() { <span class="code-keyword">return</span> fullName; }
+    <span class="code-keyword">public void</span> <span class="code-func">setFullName</span>(<span class="code-type">String</span> fullName) { <span class="code-keyword">this</span>.fullName = fullName; }
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getEmail</span>() { <span class="code-keyword">return</span> email; }
+    <span class="code-keyword">public void</span> <span class="code-func">setEmail</span>(<span class="code-type">String</span> email) { <span class="code-keyword">this</span>.email = email; }
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getPasswordHash</span>() { <span class="code-keyword">return</span> passwordHash; }
+    <span class="code-keyword">public void</span> <span class="code-func">setPasswordHash</span>(<span class="code-type">String</span> passwordHash) { <span class="code-keyword">this</span>.passwordHash = passwordHash; }
+
+    <span class="code-keyword">public</span> <span class="code-type">UserRole</span> <span class="code-func">getRole</span>() { <span class="code-keyword">return</span> role; }
+    <span class="code-keyword">public void</span> <span class="code-func">setRole</span>(<span class="code-type">UserRole</span> role) { <span class="code-keyword">this</span>.role = role; }
+
+    <span class="code-keyword">public</span> <span class="code-type">ProfileVisibility</span> <span class="code-func">getProfileVisibility</span>() { <span class="code-keyword">return</span> profileVisibility; }
+    <span class="code-keyword">public void</span> <span class="code-func">setProfileVisibility</span>(<span class="code-type">ProfileVisibility</span> profileVisibility) { <span class="code-keyword">this</span>.profileVisibility = profileVisibility; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">isActive</span>() { <span class="code-keyword">return</span> active; }
+    <span class="code-keyword">public void</span> <span class="code-func">setActive</span>(<span class="code-keyword">boolean</span> active) { <span class="code-keyword">this</span>.active = active; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getJoinDate</span>() { <span class="code-keyword">return</span> joinDate; }
+    <span class="code-keyword">public void</span> <span class="code-func">setJoinDate</span>(<span class="code-type">Date</span> joinDate) { <span class="code-keyword">this</span>.joinDate = joinDate; }
+
+    <span class="code-keyword">public</span> <span class="code-type">NotificationSettings</span> <span class="code-func">getNotificationSettings</span>() { <span class="code-keyword">return</span> notificationSettings; }
+    <span class="code-keyword">public void</span> <span class="code-func">setNotificationSettings</span>(<span class="code-type">NotificationSettings</span> notificationSettings) { <span class="code-keyword">this</span>.notificationSettings = notificationSettings; }
+
+    <span class="code-keyword">public</span> <span class="code-type">List</span>&lt;<span class="code-type">RecoveryToken</span>&gt; <span class="code-func">getRecoveryTokens</span>() { <span class="code-keyword">return</span> recoveryTokens; }
+    <span class="code-keyword">public void</span> <span class="code-func">setRecoveryTokens</span>(<span class="code-type">List</span>&lt;<span class="code-type">RecoveryToken</span>&gt; recoveryTokens) { <span class="code-keyword">this</span>.recoveryTokens = recoveryTokens; }
+
+    <span class="code-keyword">public</span> <span class="code-type">List</span>&lt;<span class="code-type">Subject</span>&gt; <span class="code-func">getSpecializedSubjects</span>() { <span class="code-keyword">return</span> specializedSubjects; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSpecializedSubjects</span>(<span class="code-type">List</span>&lt;<span class="code-type">Subject</span>&gt; specializedSubjects) { <span class="code-keyword">this</span>.specializedSubjects = specializedSubjects; }
+
+    <span class="code-comment">// Métodos de negocio especificados en el diagrama</span>
+    <span class="code-keyword">public abstract boolean</span> <span class="code-func">register</span>();
+    <span class="code-keyword">public abstract boolean</span> <span class="code-func">login</span>();
+    <span class="code-keyword">public void</span> <span class="code-func">logout</span>() {}
+    <span class="code-keyword">public boolean</span> <span class="code-func">resetPassword</span>(<span class="code-type">String</span> newPassword) { <span class="code-keyword">return true</span>; }
+    <span class="code-keyword">public boolean</span> <span class="code-func">editProfile</span>(<span class="code-type">String</span> newFullName) { <span class="code-keyword">return true</span>; }
+    <span class="code-keyword">public boolean</span> <span class="code-func">deleteAccount</span>() { <span class="code-keyword">this</span>.active = <span class="code-keyword">false</span>; <span class="code-keyword">return true</span>; }
+}
+      </div>
+
+      <!-- 2.3 SUBCLASE STUDENT -->
+      <h3 style="font-size: 1.15rem; color: var(--color-text); margin: 28px 0 12px 0;">2.3. Subclase: Student (Herencia de User)</h3>
+      <div class="code-block">
+<span class="code-keyword">package</span> com.apuntesuni.model;
+
+<span class="code-keyword">import</span> java.util.List;
+<span class="code-keyword">import</span> com.apuntesuni.model.enums.UserRole;
+
+<span class="code-comment">/**
+ * Representa al estudiante universitario con atributos específicos de su formación académica.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Student</span> <span class="code-keyword">extends</span> <span class="code-type">User</span> {
+
+    <span class="code-comment">// Atributos del Diagrama</span>
+    <span class="code-keyword">private int</span> semester;
+    <span class="code-keyword">private boolean</span> studyingSecondaryProgram;
+    <span class="code-keyword">private</span> <span class="code-type">AcademicProgram</span> academicProgram;   <span class="code-comment">// studies (0..1)</span>
+    <span class="code-keyword">private</span> <span class="code-type">AcademicProgram</span> secondaryProgram;  <span class="code-comment">// secondary program (0..1)</span>
+
+    <span class="code-comment">// Relación con inscripciones de cursos</span>
+    <span class="code-keyword">private</span> <span class="code-type">List</span>&lt;<span class="code-type">Enrollment</span>&gt; enrollments;
+
+    <span class="code-keyword">public</span> <span class="code-func">Student</span>() {
+        <span class="code-keyword">super</span>();
+        <span class="code-keyword">this</span>.role = <span class="code-type">UserRole</span>.STUDENT;
+    }
+
+    <span class="code-comment">// Getters y Setters</span>
+    <span class="code-keyword">public int</span> <span class="code-func">getSemester</span>() { <span class="code-keyword">return</span> semester; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSemester</span>(<span class="code-keyword">int</span> semester) { <span class="code-keyword">this</span>.semester = semester; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">isStudyingSecondaryProgram</span>() { <span class="code-keyword">return</span> studyingSecondaryProgram; }
+    <span class="code-keyword">public void</span> <span class="code-func">setStudyingSecondaryProgram</span>(<span class="code-keyword">boolean</span> studyingSecondaryProgram) { <span class="code-keyword">this</span>.studyingSecondaryProgram = studyingSecondaryProgram; }
+
+    <span class="code-keyword">public</span> <span class="code-type">AcademicProgram</span> <span class="code-func">getAcademicProgram</span>() { <span class="code-keyword">return</span> academicProgram; }
+    <span class="code-keyword">public void</span> <span class="code-func">setAcademicProgram</span>(<span class="code-type">AcademicProgram</span> academicProgram) { <span class="code-keyword">this</span>.academicProgram = academicProgram; }
+
+    <span class="code-keyword">public</span> <span class="code-type">AcademicProgram</span> <span class="code-func">getSecondaryProgram</span>() { <span class="code-keyword">return</span> secondaryProgram; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSecondaryProgram</span>(<span class="code-type">AcademicProgram</span> secondaryProgram) { <span class="code-keyword">this</span>.secondaryProgram = secondaryProgram; }
+
+    <span class="code-keyword">public</span> <span class="code-type">List</span>&lt;<span class="code-type">Enrollment</span>&gt; <span class="code-func">getEnrollments</span>() { <span class="code-keyword">return</span> enrollments; }
+    <span class="code-keyword">public void</span> <span class="code-func">setEnrollments</span>(<span class="code-type">List</span>&lt;<span class="code-type">Enrollment</span>&gt; enrollments) { <span class="code-keyword">this</span>.enrollments = enrollments; }
+
+    <span class="code-comment">// Métodos especificados en el diagrama</span>
+    <span class="code-keyword">public boolean</span> <span class="code-func">enrollInSubject</span>(<span class="code-type">Subject</span> subject) { <span class="code-keyword">return true</span>; }
+    <span class="code-keyword">public boolean</span> <span class="code-func">unenrollFromSubject</span>(<span class="code-type">Subject</span> subject) { <span class="code-keyword">return true</span>; }
+
+    <span class="code-annotation">@Override</span>
+    <span class="code-keyword">public boolean</span> <span class="code-func">register</span>() { <span class="code-keyword">return true</span>; }
+
+    <span class="code-annotation">@Override</span>
+    <span class="code-keyword">public boolean</span> <span class="code-func">login</span>() { <span class="code-keyword">return true</span>; }
+}
+      </div>
+
+      <!-- 2.4 CLASES NOTIFICATION SETTINGS Y RECOVERY TOKEN -->
+      <h3 style="font-size: 1.15rem; color: var(--color-text); margin: 28px 0 12px 0;">2.4. Clases: NotificationSettings & RecoveryToken</h3>
+      <div class="code-block">
+<span class="code-keyword">package</span> com.apuntesuni.model;
+
+<span class="code-keyword">import</span> java.util.Date;
+
+<span class="code-comment">/**
+ * Preferencias de notificación del usuario.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">NotificationSettings</span> {
+    <span class="code-keyword">private boolean</span> emailNotifications;
+    <span class="code-keyword">private boolean</span> subjectAlerts;
+    <span class="code-keyword">private</span> <span class="code-type">User</span> user;
+
+    <span class="code-keyword">public</span> <span class="code-func">NotificationSettings</span>() {}
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">isEmailNotifications</span>() { <span class="code-keyword">return</span> emailNotifications; }
+    <span class="code-keyword">public void</span> <span class="code-func">setEmailNotifications</span>(<span class="code-keyword">boolean</span> emailNotifications) { <span class="code-keyword">this</span>.emailNotifications = emailNotifications; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">isSubjectAlerts</span>() { <span class="code-keyword">return</span> subjectAlerts; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSubjectAlerts</span>(<span class="code-keyword">boolean</span> subjectAlerts) { <span class="code-keyword">this</span>.subjectAlerts = subjectAlerts; }
+
+    <span class="code-keyword">public</span> <span class="code-type">User</span> <span class="code-func">getUser</span>() { <span class="code-keyword">return</span> user; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUser</span>(<span class="code-type">User</span> user) { <span class="code-keyword">this</span>.user = user; }
+
+    <span class="code-comment">// Método del diagrama</span>
+    <span class="code-keyword">public void</span> <span class="code-func">updatePreferences</span>(<span class="code-keyword">boolean</span> emailNotif, <span class="code-keyword">boolean</span> subjectAlerts) {
+        <span class="code-keyword">this</span>.emailNotifications = emailNotif;
+        <span class="code-keyword">this</span>.subjectAlerts = subjectAlerts;
+    }
+}
+
+<span class="code-comment">/**
+ * Token temporal para la recuperación de contraseña de acceso.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">RecoveryToken</span> {
+    <span class="code-keyword">private</span> <span class="code-type">String</span> token;
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> creationDate;
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> expirationDate;
+    <span class="code-keyword">private boolean</span> used;
+    <span class="code-keyword">private</span> <span class="code-type">User</span> user;
+
+    <span class="code-keyword">public</span> <span class="code-func">RecoveryToken</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getToken</span>() { <span class="code-keyword">return</span> token; }
+    <span class="code-keyword">public void</span> <span class="code-func">setToken</span>(<span class="code-type">String</span> token) { <span class="code-keyword">this</span>.token = token; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getCreationDate</span>() { <span class="code-keyword">return</span> creationDate; }
+    <span class="code-keyword">public void</span> <span class="code-func">setCreationDate</span>(<span class="code-type">Date</span> creationDate) { <span class="code-keyword">this</span>.creationDate = creationDate; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getExpirationDate</span>() { <span class="code-keyword">return</span> expirationDate; }
+    <span class="code-keyword">public void</span> <span class="code-func">setExpirationDate</span>(<span class="code-type">Date</span> expirationDate) { <span class="code-keyword">this</span>.expirationDate = expirationDate; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">isUsed</span>() { <span class="code-keyword">return</span> used; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUsed</span>(<span class="code-keyword">boolean</span> used) { <span class="code-keyword">this</span>.used = used; }
+
+    <span class="code-keyword">public</span> <span class="code-type">User</span> <span class="code-func">getUser</span>() { <span class="code-keyword">return</span> user; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUser</span>(<span class="code-type">User</span> user) { <span class="code-keyword">this</span>.user = user; }
+
+    <span class="code-comment">// Métodos del diagrama</span>
+    <span class="code-keyword">public void</span> <span class="code-func">generate</span>() {}
+    <span class="code-keyword">public boolean</span> <span class="code-func">validate</span>() { <span class="code-keyword">return</span> !used && !isExpired(); }
+    <span class="code-keyword">public boolean</span> <span class="code-func">isExpired</span>() { <span class="code-keyword">return new</span> <span class="code-type">Date</span>().after(expirationDate); }
+}
+      </div>
+
+      <!-- 2.5 ACADEMIC PROGRAM, SUBJECT, ENROLLMENT, TOPIC -->
+      <h3 style="font-size: 1.15rem; color: var(--color-text); margin: 28px 0 12px 0;">2.5. Clases Académicas: AcademicProgram, Subject, Enrollment & Topic</h3>
+      <div class="code-block">
+<span class="code-keyword">package</span> com.apuntesuni.model;
+
+<span class="code-keyword">import</span> java.util.List;
+<span class="code-keyword">import</span> java.util.Date;
+<span class="code-keyword">import</span> com.apuntesuni.model.enums.ProgramType;
+
+<span class="code-comment">/**
+ * Carrera o programa académico de la universidad.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">AcademicProgram</span> {
+    <span class="code-keyword">private</span> <span class="code-type">String</span> name;
+    <span class="code-keyword">private</span> <span class="code-type">ProgramType</span> type;
+    <span class="code-keyword">private</span> <span class="code-type">List</span>&lt;<span class="code-type">AcademicProgram</span>&gt; relatedPrograms; <span class="code-comment">// related to (0..* a 0..*)</span>
+
+    <span class="code-keyword">public</span> <span class="code-func">AcademicProgram</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getName</span>() { <span class="code-keyword">return</span> name; }
+    <span class="code-keyword">public void</span> <span class="code-func">setName</span>(<span class="code-type">String</span> name) { <span class="code-keyword">this</span>.name = name; }
+
+    <span class="code-keyword">public</span> <span class="code-type">ProgramType</span> <span class="code-func">getType</span>() { <span class="code-keyword">return</span> type; }
+    <span class="code-keyword">public void</span> <span class="code-func">setType</span>(<span class="code-type">ProgramType</span> type) { <span class="code-keyword">this</span>.type = type; }
+
+    <span class="code-keyword">public void</span> <span class="code-func">addRelatedProgram</span>(<span class="code-type">AcademicProgram</span> program) {
+        <span class="code-keyword">this</span>.relatedPrograms.add(program);
+    }
+}
+
+<span class="code-comment">/**
+ * Materia o asignatura universitaria (ej. Cálculo I, Física I).
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Subject</span> {
+    <span class="code-keyword">private</span> <span class="code-type">String</span> name;
+    <span class="code-keyword">private</span> <span class="code-type">String</span> code;
+    <span class="code-keyword">private</span> <span class="code-type">AcademicProgram</span> academicProgram; <span class="code-comment">// belongs to</span>
+    <span class="code-keyword">private</span> <span class="code-type">List</span>&lt;<span class="code-type">Note</span>&gt; notes;              <span class="code-comment">// contains</span>
+
+    <span class="code-keyword">public</span> <span class="code-func">Subject</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getName</span>() { <span class="code-keyword">return</span> name; }
+    <span class="code-keyword">public void</span> <span class="code-func">setName</span>(<span class="code-type">String</span> name) { <span class="code-keyword">this</span>.name = name; }
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getCode</span>() { <span class="code-keyword">return</span> code; }
+    <span class="code-keyword">public void</span> <span class="code-func">setCode</span>(<span class="code-type">String</span> code) { <span class="code-keyword">this</span>.code = code; }
+
+    <span class="code-keyword">public</span> <span class="code-type">AcademicProgram</span> <span class="code-func">getAcademicProgram</span>() { <span class="code-keyword">return</span> academicProgram; }
+    <span class="code-keyword">public void</span> <span class="code-func">setAcademicProgram</span>(<span class="code-type">AcademicProgram</span> academicProgram) { <span class="code-keyword">this</span>.academicProgram = academicProgram; }
+
+    <span class="code-keyword">public void</span> <span class="code-func">addNote</span>(<span class="code-type">Note</span> note) { <span class="code-keyword">this</span>.notes.add(note); }
+    <span class="code-keyword">public int</span> <span class="code-func">getNoteCount</span>() { <span class="code-keyword">return this</span>.notes != <span class="code-keyword">null</span> ? <span class="code-keyword">this</span>.notes.size() : 0; }
+}
+
+<span class="code-comment">/**
+ * Registro asociativo de inscripción entre un estudiante y una materia.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Enrollment</span> {
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> enrollmentDate;
+    <span class="code-keyword">private</span> <span class="code-type">Student</span> student;
+    <span class="code-keyword">private</span> <span class="code-type">Subject</span> subject;
+
+    <span class="code-keyword">public</span> <span class="code-func">Enrollment</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getEnrollmentDate</span>() { <span class="code-keyword">return</span> enrollmentDate; }
+    <span class="code-keyword">public void</span> <span class="code-func">setEnrollmentDate</span>(<span class="code-type">Date</span> enrollmentDate) { <span class="code-keyword">this</span>.enrollmentDate = enrollmentDate; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Student</span> <span class="code-func">getStudent</span>() { <span class="code-keyword">return</span> student; }
+    <span class="code-keyword">public void</span> <span class="code-func">setStudent</span>(<span class="code-type">Student</span> student) { <span class="code-keyword">this</span>.student = student; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Subject</span> <span class="code-func">getSubject</span>() { <span class="code-keyword">return</span> subject; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSubject</span>(<span class="code-type">Subject</span> subject) { <span class="code-keyword">this</span>.subject = subject; }
+}
+
+<span class="code-comment">/**
+ * Tema específico dentro de un curso (ej. "Integral definida").
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Topic</span> {
+    <span class="code-keyword">private</span> <span class="code-type">String</span> name;
+    <span class="code-keyword">private</span> <span class="code-type">Subject</span> subject;
+
+    <span class="code-keyword">public</span> <span class="code-func">Topic</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getName</span>() { <span class="code-keyword">return</span> name; }
+    <span class="code-keyword">public void</span> <span class="code-func">setName</span>(<span class="code-type">String</span> name) { <span class="code-keyword">this</span>.name = name; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Subject</span> <span class="code-func">getSubject</span>() { <span class="code-keyword">return</span> subject; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSubject</span>(<span class="code-type">Subject</span> subject) { <span class="code-keyword">this</span>.subject = subject; }
+}
+      </div>
+
+      <!-- 2.6 CLASE NOTE (CENTRAL) -->
+      <h3 style="font-size: 1.15rem; color: var(--color-text); margin: 28px 0 12px 0;">2.6. Clase Central: Note (Apuntes y Documentos)</h3>
+      <div class="code-block">
+<span class="code-keyword">package</span> com.apuntesuni.model;
+
+<span class="code-keyword">import</span> java.util.Date;
+<span class="code-keyword">import</span> java.util.List;
+<span class="code-keyword">import</span> com.apuntesuni.model.enums.FileFormat;
+<span class="code-keyword">import</span> com.apuntesuni.model.enums.NoteStatus;
+
+<span class="code-comment">/**
+ * Representa cada apunte, examen resuelto, resumen o diagrama académico.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Note</span> {
+
+    <span class="code-comment">// Atributos del Diagrama</span>
+    <span class="code-keyword">private</span> <span class="code-type">String</span> title;
+    <span class="code-keyword">private</span> <span class="code-type">String</span> description;
+    <span class="code-keyword">private float</span> sizeInMb;
+    <span class="code-keyword">private int</span> pageCount;
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> uploadDate;
+    <span class="code-keyword">private</span> <span class="code-type">NoteStatus</span> status;
+    <span class="code-keyword">private</span> <span class="code-type">User</span> uploader;
+    <span class="code-keyword">private</span> <span class="code-type">Subject</span> subject;
+    <span class="code-keyword">private</span> <span class="code-type">Topic</span> topic;
+    <span class="code-keyword">private</span> <span class="code-type">FileFormat</span> format;
+
+    <span class="code-comment">// Colecciones asociadas</span>
+    <span class="code-keyword">private</span> <span class="code-type">List</span>&lt;<span class="code-type">Rating</span>&gt; ratings;
+    <span class="code-keyword">private</span> <span class="code-type">List</span>&lt;<span class="code-type">Comment</span>&gt; comments;
+    <span class="code-keyword">private</span> <span class="code-type">List</span>&lt;<span class="code-type">Download</span>&gt; downloads;
+    <span class="code-keyword">private</span> <span class="code-type">List</span>&lt;<span class="code-type">Report</span>&gt; reports;
+
+    <span class="code-keyword">public</span> <span class="code-func">Note</span>() {
+        <span class="code-keyword">this</span>.status = <span class="code-type">NoteStatus</span>.VISIBLE;
+        <span class="code-keyword">this</span>.uploadDate = <span class="code-keyword">new</span> <span class="code-type">Date</span>();
+    }
+
+    <span class="code-comment">// Getters y Setters</span>
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getTitle</span>() { <span class="code-keyword">return</span> title; }
+    <span class="code-keyword">public void</span> <span class="code-func">setTitle</span>(<span class="code-type">String</span> title) { <span class="code-keyword">this</span>.title = title; }
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getDescription</span>() { <span class="code-keyword">return</span> description; }
+    <span class="code-keyword">public void</span> <span class="code-func">setDescription</span>(<span class="code-type">String</span> description) { <span class="code-keyword">this</span>.description = description; }
+
+    <span class="code-keyword">public float</span> <span class="code-func">getSizeInMb</span>() { <span class="code-keyword">return</span> sizeInMb; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSizeInMb</span>(<span class="code-keyword">float</span> sizeInMb) { <span class="code-keyword">this</span>.sizeInMb = sizeInMb; }
+
+    <span class="code-keyword">public int</span> <span class="code-func">getPageCount</span>() { <span class="code-keyword">return</span> pageCount; }
+    <span class="code-keyword">public void</span> <span class="code-func">setPageCount</span>(<span class="code-keyword">int</span> pageCount) { <span class="code-keyword">this</span>.pageCount = pageCount; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getUploadDate</span>() { <span class="code-keyword">return</span> uploadDate; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUploadDate</span>(<span class="code-type">Date</span> uploadDate) { <span class="code-keyword">this</span>.uploadDate = uploadDate; }
+
+    <span class="code-keyword">public</span> <span class="code-type">NoteStatus</span> <span class="code-func">getStatus</span>() { <span class="code-keyword">return</span> status; }
+    <span class="code-keyword">public void</span> <span class="code-func">setStatus</span>(<span class="code-type">NoteStatus</span> status) { <span class="code-keyword">this</span>.status = status; }
+
+    <span class="code-keyword">public</span> <span class="code-type">User</span> <span class="code-func">getUploader</span>() { <span class="code-keyword">return</span> uploader; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUploader</span>(<span class="code-type">User</span> uploader) { <span class="code-keyword">this</span>.uploader = uploader; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Subject</span> <span class="code-func">getSubject</span>() { <span class="code-keyword">return</span> subject; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSubject</span>(<span class="code-type">Subject</span> subject) { <span class="code-keyword">this</span>.subject = subject; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Topic</span> <span class="code-func">getTopic</span>() { <span class="code-keyword">return</span> topic; }
+    <span class="code-keyword">public void</span> <span class="code-func">setTopic</span>(<span class="code-type">Topic</span> topic) { <span class="code-keyword">this</span>.topic = topic; }
+
+    <span class="code-keyword">public</span> <span class="code-type">FileFormat</span> <span class="code-func">getFormat</span>() { <span class="code-keyword">return</span> format; }
+    <span class="code-keyword">public void</span> <span class="code-func">setFormat</span>(<span class="code-type">FileFormat</span> format) { <span class="code-keyword">this</span>.format = format; }
+
+    <span class="code-comment">// Métodos de negocio del diagrama de clases</span>
+    <span class="code-keyword">public boolean</span> <span class="code-func">upload</span>() { <span class="code-keyword">return this</span>.sizeInMb &lt;= 10.0f; }
+    <span class="code-keyword">public boolean</span> <span class="code-func">editInfo</span>(<span class="code-type">String</span> newTitle, <span class="code-type">String</span> newDescription) { <span class="code-keyword">return true</span>; }
+    <span class="code-keyword">public boolean</span> <span class="code-func">delete</span>() { <span class="code-keyword">this</span>.status = <span class="code-type">NoteStatus</span>.HIDDEN; <span class="code-keyword">return true</span>; }
+    <span class="code-keyword">public byte</span>[] <span class="code-func">download</span>() { <span class="code-keyword">return new byte</span>[0]; }
+    <span class="code-keyword">public void</span> <span class="code-func">deactivateNote</span>() { <span class="code-keyword">this</span>.status = <span class="code-type">NoteStatus</span>.HIDDEN; }
+    <span class="code-keyword">public void</span> <span class="code-func">restore</span>() { <span class="code-keyword">this</span>.status = <span class="code-type">NoteStatus</span>.VISIBLE; }
+    <span class="code-keyword">public void</span> <span class="code-func">deletePermanently</span>() {}
+}
+      </div>
+
+      <!-- 2.7 RATING, COMMENT, DOWNLOAD, REPORT, NOTIFICATION -->
+      <h3 style="font-size: 1.15rem; color: var(--color-text); margin: 28px 0 12px 0;">2.7. Clases Transaccionales: Rating, Comment, Download, Report & Notification</h3>
+      <div class="code-block">
+<span class="code-keyword">package</span> com.apuntesuni.model;
+
+<span class="code-keyword">import</span> java.util.Date;
+<span class="code-keyword">import</span> com.apuntesuni.model.enums.ReportReason;
+<span class="code-keyword">import</span> com.apuntesuni.model.enums.ReportSeverity;
+
+<span class="code-comment">/**
+ * Calificación con estrellas emitida por un usuario.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Rating</span> {
+    <span class="code-keyword">private int</span> value; <span class="code-comment">// 1 a 5</span>
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> date;
+    <span class="code-keyword">private</span> <span class="code-type">User</span> user;
+    <span class="code-keyword">private</span> <span class="code-type">Note</span> note;
+
+    <span class="code-keyword">public</span> <span class="code-func">Rating</span>() {}
+
+    <span class="code-keyword">public int</span> <span class="code-func">getValue</span>() { <span class="code-keyword">return</span> value; }
+    <span class="code-keyword">public void</span> <span class="code-func">setValue</span>(<span class="code-keyword">int</span> value) { <span class="code-keyword">this</span>.value = value; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getDate</span>() { <span class="code-keyword">return</span> date; }
+    <span class="code-keyword">public void</span> <span class="code-func">setDate</span>(<span class="code-type">Date</span> date) { <span class="code-keyword">this</span>.date = date; }
+
+    <span class="code-keyword">public</span> <span class="code-type">User</span> <span class="code-func">getUser</span>() { <span class="code-keyword">return</span> user; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUser</span>(<span class="code-type">User</span> user) { <span class="code-keyword">this</span>.user = user; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Note</span> <span class="code-func">getNote</span>() { <span class="code-keyword">return</span> note; }
+    <span class="code-keyword">public void</span> <span class="code-func">setNote</span>(<span class="code-type">Note</span> note) { <span class="code-keyword">this</span>.note = note; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">save</span>() { <span class="code-keyword">return true</span>; }
+}
+
+<span class="code-comment">/**
+ * Comentario u opinión escrita al pie de un apunte.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Comment</span> {
+    <span class="code-keyword">private</span> <span class="code-type">String</span> text;
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> date;
+    <span class="code-keyword">private</span> <span class="code-type">User</span> user;
+    <span class="code-keyword">private</span> <span class="code-type">Note</span> note;
+
+    <span class="code-keyword">public</span> <span class="code-func">Comment</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getText</span>() { <span class="code-keyword">return</span> text; }
+    <span class="code-keyword">public void</span> <span class="code-func">setText</span>(<span class="code-type">String</span> text) { <span class="code-keyword">this</span>.text = text; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getDate</span>() { <span class="code-keyword">return</span> date; }
+    <span class="code-keyword">public void</span> <span class="code-func">setDate</span>(<span class="code-type">Date</span> date) { <span class="code-keyword">this</span>.date = date; }
+
+    <span class="code-keyword">public</span> <span class="code-type">User</span> <span class="code-func">getUser</span>() { <span class="code-keyword">return</span> user; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUser</span>(<span class="code-type">User</span> user) { <span class="code-keyword">this</span>.user = user; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Note</span> <span class="code-func">getNote</span>() { <span class="code-keyword">return</span> note; }
+    <span class="code-keyword">public void</span> <span class="code-func">setNote</span>(<span class="code-type">Note</span> note) { <span class="code-keyword">this</span>.note = note; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">post</span>() { <span class="code-keyword">return true</span>; }
+}
+
+<span class="code-comment">/**
+ * Registro de una descarga realizada sobre un archivo.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Download</span> {
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> date;
+    <span class="code-keyword">private</span> <span class="code-type">User</span> user;
+    <span class="code-keyword">private</span> <span class="code-type">Note</span> note;
+
+    <span class="code-keyword">public</span> <span class="code-func">Download</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getDate</span>() { <span class="code-keyword">return</span> date; }
+    <span class="code-keyword">public void</span> <span class="code-func">setDate</span>(<span class="code-type">Date</span> date) { <span class="code-keyword">this</span>.date = date; }
+
+    <span class="code-keyword">public</span> <span class="code-type">User</span> <span class="code-func">getUser</span>() { <span class="code-keyword">return</span> user; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUser</span>(<span class="code-type">User</span> user) { <span class="code-keyword">this</span>.user = user; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Note</span> <span class="code-func">getNote</span>() { <span class="code-keyword">return</span> note; }
+    <span class="code-keyword">public void</span> <span class="code-func">setNote</span>(<span class="code-type">Note</span> note) { <span class="code-keyword">this</span>.note = note; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">register</span>() { <span class="code-keyword">return true</span>; }
+}
+
+<span class="code-comment">/**
+ * Denuncia enviada contra un apunte por vulnerar las normas comunitarias.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Report</span> {
+    <span class="code-keyword">private</span> <span class="code-type">ReportReason</span> reason;
+    <span class="code-keyword">private</span> <span class="code-type">ReportSeverity</span> severity;
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> date;
+    <span class="code-keyword">private</span> <span class="code-type">User</span> user;
+    <span class="code-keyword">private</span> <span class="code-type">Note</span> note;
+
+    <span class="code-keyword">public</span> <span class="code-func">Report</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">ReportReason</span> <span class="code-func">getReason</span>() { <span class="code-keyword">return</span> reason; }
+    <span class="code-keyword">public void</span> <span class="code-func">setReason</span>(<span class="code-type">ReportReason</span> reason) { <span class="code-keyword">this</span>.reason = reason; }
+
+    <span class="code-keyword">public</span> <span class="code-type">ReportSeverity</span> <span class="code-func">getSeverity</span>() { <span class="code-keyword">return</span> severity; }
+    <span class="code-keyword">public void</span> <span class="code-func">setSeverity</span>(<span class="code-type">ReportSeverity</span> severity) { <span class="code-keyword">this</span>.severity = severity; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getDate</span>() { <span class="code-keyword">return</span> date; }
+    <span class="code-keyword">public void</span> <span class="code-func">setDate</span>(<span class="code-type">Date</span> date) { <span class="code-keyword">this</span>.date = date; }
+
+    <span class="code-keyword">public</span> <span class="code-type">User</span> <span class="code-func">getUser</span>() { <span class="code-keyword">return</span> user; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUser</span>(<span class="code-type">User</span> user) { <span class="code-keyword">this</span>.user = user; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Note</span> <span class="code-func">getNote</span>() { <span class="code-keyword">return</span> note; }
+    <span class="code-keyword">public void</span> <span class="code-func">setNote</span>(<span class="code-type">Note</span> note) { <span class="code-keyword">this</span>.note = note; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">submit</span>() { <span class="code-keyword">return true</span>; }
+}
+
+<span class="code-comment">/**
+ * Alerta o notificación recibida en la bandeja de entrada del usuario.
+ */</span>
+<span class="code-keyword">public class</span> <span class="code-type">Notification</span> {
+    <span class="code-keyword">private</span> <span class="code-type">String</span> type;
+    <span class="code-keyword">private</span> <span class="code-type">String</span> message;
+    <span class="code-keyword">private</span> <span class="code-type">Date</span> date;
+    <span class="code-keyword">private boolean</span> read;
+    <span class="code-keyword">private</span> <span class="code-type">User</span> user;
+    <span class="code-keyword">private</span> <span class="code-type">Note</span> relatedNote;
+
+    <span class="code-keyword">public</span> <span class="code-func">Notification</span>() {}
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getType</span>() { <span class="code-keyword">return</span> type; }
+    <span class="code-keyword">public void</span> <span class="code-func">setType</span>(<span class="code-type">String</span> type) { <span class="code-keyword">this</span>.type = type; }
+
+    <span class="code-keyword">public</span> <span class="code-type">String</span> <span class="code-func">getMessage</span>() { <span class="code-keyword">return</span> message; }
+    <span class="code-keyword">public void</span> <span class="code-func">setMessage</span>(<span class="code-type">String</span> message) { <span class="code-keyword">this</span>.message = message; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Date</span> <span class="code-func">getDate</span>() { <span class="code-keyword">return</span> date; }
+    <span class="code-keyword">public void</span> <span class="code-func">setDate</span>(<span class="code-type">Date</span> date) { <span class="code-keyword">this</span>.date = date; }
+
+    <span class="code-keyword">public boolean</span> <span class="code-func">isRead</span>() { <span class="code-keyword">return</span> read; }
+    <span class="code-keyword">public void</span> <span class="code-func">setRead</span>(<span class="code-keyword">boolean</span> read) { <span class="code-keyword">this</span>.read = read; }
+
+    <span class="code-keyword">public</span> <span class="code-type">User</span> <span class="code-func">getUser</span>() { <span class="code-keyword">return</span> user; }
+    <span class="code-keyword">public void</span> <span class="code-func">setUser</span>(<span class="code-type">User</span> user) { <span class="code-keyword">this</span>.user = user; }
+
+    <span class="code-keyword">public</span> <span class="code-type">Note</span> <span class="code-func">getRelatedNote</span>() { <span class="code-keyword">return</span> relatedNote; }
+    <span class="code-keyword">public void</span> <span class="code-func">setRelatedNote</span>(<span class="code-type">Note</span> relatedNote) { <span class="code-keyword">this</span>.relatedNote = relatedNote; }
+
+    <span class="code-keyword">public void</span> <span class="code-func">markAsRead</span>() { <span class="code-keyword">this</span>.read = <span class="code-keyword">true</span>; }
+}
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: ARQUITECTURA MVC Y CONCLUSIÓN -->
+    <section class="doc-section">
+      <h2 class="doc-section-title">
+        <span>🏛️</span> 3. Trazabilidad Arquitectónica (MVC)
+      </h2>
+      <div class="grid-2col">
+        <div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px;">Vistas (HTML5 / UI)</h3>
+          <p style="font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5;">
+            Las 16 pantallas (Landing, Registro, Login, Dashboard, Buscar, Archivo, etc.) representan la interfaz de interacción del usuario, capturan eventos (clics, inputs, arrastre de archivos) y renderizan datos visuales usando estilos estándar compartidos.
+          </p>
+        </div>
+        <div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px;">Modelo (Java / Dominio)</h3>
+          <p style="font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5;">
+            Las 14 clases Java y 7 enumeraciones implementan las entidades de negocio puras, encapsulan sus atributos con getters/setters, ejecutan validaciones y garantizan la integridad referencial sin depender del framework visual.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="text-align: center; padding: 24px; font-size: 0.8rem; color: var(--color-text-muted); border-top: 1px solid var(--color-border); background: white;">
+    Banco de Apuntes UNI — Documentación de Arquitectura de Clases y Modelo Java Conceptual
+  </footer>
+
+</body>
+</html>

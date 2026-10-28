@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis materias — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="dashboard.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+
+        <div class="header-search">
+          <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <input type="search" placeholder="Busca por título o palabra clave..." aria-label="Buscar archivos">
+        </div>
+      </div>
+
+      <nav class="header-nav" aria-label="Navegación principal">
+        <a href="dashboard.html" class="nav-link">Inicio</a>
+        <a href="mis-materias.html" class="nav-link active">Mis materias</a>
+        <a href="notificaciones.html" class="nav-link">Notificaciones</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="subir.html" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 7px 16px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          Subir
+        </a>
+
+        <a href="notificaciones.html" class="icon-bell-btn" aria-label="Notificaciones">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notification-dot"></span>
+        </a>
+
+        <a href="perfil.html" class="user-avatar-btn" aria-label="Perfil de usuario">
+          <span class="avatar-circle">AR</span>
+          <svg class="avatar-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content main-content-narrow">
+
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 1.6rem; font-weight: 700; color: var(--color-text); margin-bottom: 6px;">Mis materias</h1>
+      <p style="font-size: 0.9rem; color: var(--color-text-muted);">Inscríbete para recibir alertas cuando suban material nuevo.</p>
+    </div>
+
+    <!-- Banner informativo de carrera -->
+    <div class="info-banner" style="margin-bottom: 24px;">
+      <span style="font-size: 1rem;">ℹ</span>
+      <span>Materias disponibles para <strong>Ingeniería de Sistemas</strong></span>
+    </div>
+
+    <!-- Barra de pestañas y búsqueda -->
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+      <div class="tabs-nav" style="background: none; padding: 0; gap: 6px;">
+        <button type="button" id="tabTodas" class="tab-btn active" style="border: 1px solid var(--color-border); border-radius: 8px; padding: 8px 16px;" onclick="filtrarPestana('todas')">Todas (10)</button>
+        <button type="button" id="tabInscritas" class="tab-btn" style="border: 1px solid var(--color-border); border-radius: 8px; padding: 8px 16px;" onclick="filtrarPestana('inscritas')">Inscritas (5)</button>
+      </div>
+
+      <div style="position: relative; max-width: 260px; width: 100%;">
+        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; fill: var(--color-text-muted);" viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+        <input type="text" id="filtroMateriaInput" oninput="filtrarPorTexto()" placeholder="Buscar materia..." class="form-input" style="padding-left: 36px; border-radius: 20px; font-size: 0.85rem;">
+      </div>
+    </div>
+
+    <!-- Lista de Materias -->
+    <div class="subject-list" id="materiasList">
+
+      <!-- Materia 1 -->
+      <div class="subject-item-card" data-enrolled="true">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">MA</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Cálculo I</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">142 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-enroll-toggle">✓ Inscrito</button>
+      </div>
+
+      <!-- Materia 2 -->
+      <div class="subject-item-card" data-enrolled="true">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">FI</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Física I</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">98 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-enroll-toggle">✓ Inscrito</button>
+      </div>
+
+      <!-- Materia 3 -->
+      <div class="subject-item-card" data-enrolled="true">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">MA</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Álgebra Lineal</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">67 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-enroll-toggle">✓ Inscrito</button>
+      </div>
+
+      <!-- Materia 4 -->
+      <div class="subject-item-card" data-enrolled="true">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">CS</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Programación I</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">115 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-enroll-toggle">✓ Inscrito</button>
+      </div>
+
+      <!-- Materia 5 -->
+      <div class="subject-item-card" data-enrolled="true">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">MA</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Estadística</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">55 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-enroll-toggle">✓ Inscrito</button>
+      </div>
+
+      <!-- Materia 6 -->
+      <div class="subject-item-card" data-enrolled="false">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">MA</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Cálculo II</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">78 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-enroll-toggle">Inscribirme</button>
+      </div>
+
+      <!-- Materia 7 -->
+      <div class="subject-item-card" data-enrolled="false">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">FI</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Física II</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">62 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-enroll-toggle">Inscribirme</button>
+      </div>
+
+      <!-- Materia 8 -->
+      <div class="subject-item-card" data-enrolled="false">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">CS</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Arquitectura de Computadores</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">41 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-enroll-toggle">Inscribirme</button>
+      </div>
+
+      <!-- Materia 9 -->
+      <div class="subject-item-card" data-enrolled="false">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">CS</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Base de Datos I</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">89 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-enroll-toggle">Inscribirme</button>
+      </div>
+
+      <!-- Materia 10 -->
+      <div class="subject-item-card" data-enrolled="false">
+        <div class="subject-item-left">
+          <span class="badge-materia-code">CS</span>
+          <div>
+            <h2 class="subject-name" style="font-size: 0.98rem; font-weight: 700; color: var(--color-text);">Sistemas Operativos</h2>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);">53 archivos disponibles</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-enroll-toggle">Inscribirme</button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    let filtroActual = 'todas';
+
+    function filtrarPestana(tipo) {
+      filtroActual = tipo;
+      document.getElementById('tabTodas').classList.toggle('active', tipo === 'todas');
+      document.getElementById('tabInscritas').classList.toggle('active', tipo === 'inscritas');
+      aplicarFiltros();
+    }
+
+    function filtrarPorTexto() {
+      aplicarFiltros();
+    }
+
+    function aplicarFiltros() {
+      const q = document.getElementById('filtroMateriaInput').value.toLowerCase();
+      document.querySelectorAll('#materiasList .subject-item-card').forEach(card => {
+        const nombre = card.querySelector('.subject-name').textContent.toLowerCase();
+        const isInscrito = card.querySelector('.btn-enroll-toggle').classList.contains('btn-primary');
+        const coincidePestana = (filtroActual === 'todas') || (filtroActual === 'inscritas' && isInscrito);
+        const coincideTexto = nombre.includes(q);
+        card.style.display = (coincidePestana && coincideTexto) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

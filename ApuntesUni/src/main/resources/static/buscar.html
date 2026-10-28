@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultados de búsqueda — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="dashboard.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+
+        <div class="header-search">
+          <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <input type="search" value="cálculo" placeholder="Busca por título o palabra clave..." aria-label="Buscar archivos">
+        </div>
+      </div>
+
+      <nav class="header-nav" aria-label="Navegación principal">
+        <a href="dashboard.html" class="nav-link">Inicio</a>
+        <a href="mis-materias.html" class="nav-link">Mis materias</a>
+        <a href="notificaciones.html" class="nav-link">Notificaciones</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="subir.html" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 7px 16px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          Subir
+        </a>
+
+        <a href="notificaciones.html" class="icon-bell-btn" aria-label="Notificaciones">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notification-dot"></span>
+        </a>
+
+        <a href="perfil.html" class="user-avatar-btn" aria-label="Perfil de usuario">
+          <span class="avatar-circle">AR</span>
+          <svg class="avatar-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- Barra de búsqueda superior con término activo -->
+    <div style="position: relative; margin-bottom: 24px;">
+      <div style="position: relative; width: 100%;">
+        <svg style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; fill: var(--color-text-muted);" viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+        <input type="search" value="cálculo" class="form-input" style="padding-left: 44px; border-radius: 10px; font-size: 1rem; background-color: var(--color-white);" placeholder="Buscar archivos...">
+      </div>
+    </div>
+
+    <!-- Encabezado de resultados y orden -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+      <div>
+        <span style="font-weight: 700; font-size: 1rem; color: var(--color-text);">9 resultados</span>
+        <span style="color: var(--color-text-muted); font-size: 0.95rem;"> para "cálculo"</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <select class="form-select" style="padding: 6px 12px; font-size: 0.85rem; width: auto; background-color: var(--color-white);" aria-label="Ordenar resultados">
+          <option selected>Más relevantes</option>
+          <option>Mejor calificados</option>
+          <option>Más descargados</option>
+          <option>Más recientes</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Nota de orden y jerarquía de resultados -->
+    <div class="info-banner" style="margin-bottom: 28px; padding: 10px 16px; font-size: 0.82rem; background-color: #f8fafc; border-color: #e2e8f0; color: #4b5563;">
+      <span>💡</span>
+      <span>Primero: <strong style="color: var(--color-purple);">apuntes de docente</strong> en materias especializadas · luego: <strong style="color: var(--color-warning);">autores con alta calificación</strong> · resto por <strong>relevancia</strong>.</span>
+    </div>
+
+    <!-- Layout: Filtros a la izquierda, Grilla a la derecha -->
+    <div class="search-results-layout">
+      
+      <!-- Sidebar de Filtros -->
+      <aside class="filters-sidebar" aria-label="Filtros de búsqueda">
+        <h2 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 18px; color: var(--color-text);">Filtros</h2>
+
+        <div class="filter-group">
+          <h3 class="filter-title">Materia</h3>
+          <label class="filter-option">
+            <input type="radio" name="materia" checked>
+            <span>Todas</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="materia">
+            <span>Cálculo I</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="materia">
+            <span>Álgebra Lineal</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="materia">
+            <span>Física I</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="materia">
+            <span>Química General</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="materia">
+            <span>Programación I</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="materia">
+            <span>Estadística</span>
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <h3 class="filter-title">Rango de fechas</h3>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <input type="date" class="form-input" style="font-size: 0.82rem; padding: 6px 10px;" aria-label="Fecha inicial">
+            <input type="date" class="form-input" style="font-size: 0.82rem; padding: 6px 10px;" aria-label="Fecha final">
+          </div>
+        </div>
+      </aside>
+
+      <!-- Resultados (9 Cards) -->
+      <section class="files-grid" aria-label="Lista de archivos encontrados">
+        <!-- Card 1 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-docente">🎓 Apuntes de docente</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">3.8 MB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes de cinemática — semana 5 con esquemas</h3>
+          <p class="file-card-meta">Física I · Cinemática</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(37)</span></div>
+            <div class="downloads-count">↓ 198</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Diego Paredes <span class="author-rating-pill">★ 4.9</span></span>
+            <span>10 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-destacado">★ Autor destacado</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">2.3 MB</span>
+          </div>
+          <h3 class="file-card-title">Resumen: Sistemas de ecuaciones lineales</h3>
+          <p class="file-card-meta">Álgebra Lineal · Sistemas de ecuaciones</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(22)</span></div>
+            <div class="downloads-count">↓ 143</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Sofía Vargas <span class="author-rating-pill">★ 4.8</span></span>
+            <span>30 jul 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-destacado">★ Autor destacado</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">2.1 MB</span>
+          </div>
+          <h3 class="file-card-title">Resumen completo: Integral definida con ejercicios resueltos</h3>
+          <p class="file-card-meta">Cálculo I · Integral definida</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(64)</span></div>
+            <div class="downloads-count">↓ 412</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Carlos Mendoza <span class="author-rating-pill">★ 4.7</span></span>
+            <span>15 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-destacado">★ Autor destacado</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">1.4 MB</span>
+          </div>
+          <h3 class="file-card-title">Resumen: Transformaciones lineales y subespacios</h3>
+          <p class="file-card-meta">Álgebra Lineal · Transformaciones lineales</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(43)</span></div>
+            <div class="downloads-count">↓ 287</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Valeria Soto <span class="author-rating-pill">★ 4.6</span></span>
+            <span>12 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 5 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-destacado">★ Autor destacado</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="badge badge-docx">DOCX</span>
+            <span class="file-card-meta">1.2 MB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes Programación I — Arreglos y recursión</h3>
+          <p class="file-card-meta">Programación I · Arreglos y recursión</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(52)</span></div>
+            <div class="downloads-count">↓ 334</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Luis Ríos <span class="author-rating-pill">★ 4.5</span></span>
+            <span>6 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 6 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">1.8 MB</span>
+          </div>
+          <h3 class="file-card-title">Resumen de distribuciones de probabilidad con ejemplos</h3>
+          <p class="file-card-meta">Estadística · Probabilidad</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★★ <span class="vote-count">(31)</span></div>
+            <div class="downloads-count">↓ 201</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">María Chávez <span class="author-rating-pill">★ 4.3</span></span>
+            <span>4 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 7 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">980 KB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes Semana 9: Termodinámica básica</h3>
+          <p class="file-card-meta">Química General · Termodinámica</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★☆ <span class="vote-count">(28)</span></div>
+            <div class="downloads-count">↓ 156</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Ana Romero <span class="author-rating-pill">★ 4.2</span></span>
+            <span>8 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 8 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">1.1 MB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes de límites y continuidad con ejercicios</h3>
+          <p class="file-card-meta">Cálculo I · Límites</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★☆ <span class="vote-count">(26)</span></div>
+            <div class="downloads-count">↓ 178</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Paulo Reyes <span class="author-rating-pill">★ 4.1</span></span>
+            <span>2 ago 2025</span>
+          </div>
+        </a>
+
+        <!-- Card 9 -->
+        <a href="archivo.html" class="file-card">
+          <div class="file-card-top">
+            <span class="badge badge-pdf">PDF</span>
+            <span class="file-card-meta">876 KB</span>
+          </div>
+          <h3 class="file-card-title">Apuntes dinámica: leyes de Newton aplicadas</h3>
+          <p class="file-card-meta">Física I · Dinámica</p>
+          <div class="file-card-stats">
+            <div class="stars-rating">★★★★☆ <span class="vote-count">(40)</span></div>
+            <div class="downloads-count">↓ 267</div>
+          </div>
+          <div class="file-card-footer">
+            <span class="file-card-author">Roberto Casas <span class="author-rating-pill">★ 3.9</span></span>
+            <span>28 jul 2025</span>
+          </div>
+        </a>
+      </section>
+
+    </div>
+
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

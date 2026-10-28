@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de materias — Panel Admin — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Admin -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content">
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="admin-layout">
+
+      <!-- Sidebar Admin -->
+      <aside class="admin-sidebar" aria-label="Menú de administración">
+        <div class="admin-sidebar-header">Panel de Control</div>
+        <nav class="admin-nav">
+          <a th:href="@{/admin/materias}" class="admin-nav-item active">Gestión de Materias</a>
+          <a th:href="@{/admin/roles}" class="admin-nav-item">Usuarios y Roles</a>
+          <a th:href="@{/moderacion/reportes}" class="admin-nav-item">Reportes y Moderación</a>
+        </nav>
+      </aside>
+
+      <!-- Contenido Admin -->
+      <section>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text);">Catálogo de Materias</h1>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted);" th:text="${#lists.size(subjects)} + ' materias registradas'">0 materias</p>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button type="button" onclick="openModal('createProgramModal')" class="btn btn-secondary btn-sm" style="border-radius: 8px;">
+              + Nueva Carrera
+            </button>
+            <button type="button" onclick="openModal('createMateriaModal')" class="btn btn-primary btn-sm" style="border-radius: 8px;">
+              + Nueva Materia
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-content-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Materia</th>
+                <th>Créditos</th>
+                <th>Carreras Asociadas</th>
+                <th>Apuntes</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(subjects)}">
+                <td colspan="6" style="text-align: center; color: #64748b; padding: 24px;">No hay materias registradas.</td>
+              </tr>
+              <tr th:each="s : ${subjects}">
+                <td><span class="badge" style="background-color: #f1f5f9; color: #475569;" th:text="${s.code}">MA101</span></td>
+                <td style="font-weight: 600;" th:text="${s.name}">Cálculo I</td>
+                <td th:text="${s.credits}">4</td>
+                <td>
+                  <span th:each="p, iter : ${s.academicPrograms}" th:text="${p.code} + (!iter.last ? ', ' : '')" class="badge" style="background: #e2e8f0; color: #334155; margin-right: 2px;">SIS</span>
+                </td>
+                <td th:text="${s.notes != null ? #lists.size(s.notes) : 0}">0</td>
+                <td style="text-align: right;">
+                  <form th:action="@{/admin/materias/{id}/eliminar(id=${s.id})}" method="post" style="display: inline;" onsubmit="return confirm('¿Deseas desactivar o eliminar esta materia?');">
+                    <button type="submit" class="btn btn-outline btn-sm" style="padding: 4px 8px; border: none; color: var(--color-danger);" title="Eliminar materia">🗑️</button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Modal Crear Materia -->
+  <div id="createMateriaModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="createMateriaTitle">
+    <div class="modal-card">
+      <button type="button" class="modal-close" data-close-modal aria-label="Cerrar modal" onclick="closeModal('createMateriaModal')">×</button>
+      <h2 id="createMateriaTitle" class="modal-title">Agregar nueva materia</h2>
+
+      <form th:action="@{/admin/materias/crear}" method="post" th:object="${subjectDto}">
+        <div class="form-group">
+          <label for="code" class="form-label">Código de la materia</label>
+          <input type="text" id="code" th:field="*{code}" class="form-input" placeholder="Ej. MA101, CS202" required>
+        </div>
+
+        <div class="form-group">
+          <label for="name" class="form-label">Nombre de la materia</label>
+          <input type="text" id="name" th:field="*{name}" class="form-input" placeholder="Ej. Cálculo Multivariable" required>
+        </div>
+
+        <div class="form-group">
+          <label for="credits" class="form-label">Créditos académicos</label>
+          <input type="number" id="credits" th:field="*{credits}" class="form-input" min="1" max="10" value="4" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Descripción</label>
+          <textarea id="description" th:field="*{description}" class="form-textarea" rows="2" placeholder="Resumen del contenido del curso..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Carreras a las que pertenece</label>
+          <div style="max-height: 120px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 6px; padding: 8px;">
+            <label th:each="p : ${programs}" class="filter-option" style="padding: 4px;">
+              <input type="checkbox" name="academicProgramIds" th:value="${p.id}">
+              <span th:text="${p.name} + ' (' + ${p.code} + ')'">Sistemas</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="margin-top: 16px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('createMateriaModal')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear materia</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Crear Carrera -->
+  <div id="createProgramModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="createProgramTitle">
+    <div class="modal-card">
+      <button type="button" class="modal-close" data-close-modal aria-label="Cerrar modal" onclick="closeModal('createProgramModal')">×</button>
+      <h2 id="createProgramTitle" class="modal-title">Agregar nueva carrera</h2>
+
+      <form th:action="@{/admin/carreras/crear}" method="post" th:object="${programDto}">
+        <div class="form-group">
+          <label for="pCode" class="form-label">Código de la carrera</label>
+          <input type="text" id="pCode" th:field="*{code}" class="form-input" placeholder="Ej. SIS, ELEC" required>
+        </div>
+
+        <div class="form-group">
+          <label for="pName" class="form-label">Nombre de la carrera</label>
+          <input type="text" id="pName" th:field="*{name}" class="form-input" placeholder="Ej. Ingeniería Electrónica" required>
+        </div>
+
+        <div class="form-group">
+          <label for="pFaculty" class="form-label">Facultad</label>
+          <input type="text" id="pFaculty" th:field="*{faculty}" class="form-input" placeholder="Ej. Facultad de Ingeniería Eléctrica y Electrónica" required>
+        </div>
+
+        <div class="modal-actions" style="margin-top: 16px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('createProgramModal')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear carrera</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

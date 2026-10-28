@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explorar y Buscar Apuntes — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content">
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <form th:action="@{/buscar}" method="get" id="searchFilterForm">
+      <!-- Barra de búsqueda superior con término activo -->
+      <div style="position: relative; margin-bottom: 24px;">
+        <div style="position: relative; width: 100%;">
+          <svg style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; fill: var(--color-text-muted);" viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <input type="search" name="query" th:value="${filter.query}" class="form-input" style="padding-left: 44px; border-radius: 10px; font-size: 1rem; background-color: var(--color-white);" placeholder="Buscar por título, temas o palabras clave...">
+        </div>
+      </div>
+
+      <!-- Encabezado de resultados y orden -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <span style="font-weight: 700; font-size: 1rem; color: var(--color-text);" th:text="${notes.totalElements} + ' resultados'">0 resultados</span>
+          <span th:if="${filter.query != null and !filter.query.isBlank()}" style="color: var(--color-text-muted); font-size: 0.95rem;" th:text="' para \'' + ${filter.query} + '\''"></span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <select name="sortBy" class="form-select" style="padding: 6px 12px; font-size: 0.85rem; width: auto; background-color: var(--color-white);" onchange="this.form.submit()">
+            <option value="recent" th:selected="${filter.sortBy == 'recent' or filter.sortBy == null}">Más recientes</option>
+            <option value="downloads" th:selected="${filter.sortBy == 'downloads'}">Más descargados</option>
+            <option value="views" th:selected="${filter.sortBy == 'views'}">Más vistos</option>
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 8px; padding: 6px 14px;">Filtrar</button>
+        </div>
+      </div>
+
+      <!-- Layout: Filtros a la izquierda, Grilla a la derecha -->
+      <div class="search-results-layout">
+        
+        <!-- Sidebar de Filtros -->
+        <aside class="filters-sidebar" aria-label="Filtros de búsqueda">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <h2 style="font-size: 0.95rem; font-weight: 700; margin: 0; color: var(--color-text);">Filtros</h2>
+            <a th:href="@{/buscar}" style="font-size: 0.8rem; color: var(--color-primary); font-weight: 500;">Limpiar</a>
+          </div>
+
+          <!-- Filtro por Carrera -->
+          <div class="filter-group">
+            <h3 class="filter-title">Carrera</h3>
+            <select name="programId" class="form-select" style="font-size: 0.85rem; padding: 6px;" onchange="this.form.submit()">
+              <option value="" th:selected="${filter.programId == null}">Todas las carreras</option>
+              <option th:each="p : ${programs}" th:value="${p.id}" th:text="${p.name}" th:selected="${filter.programId == p.id}"></option>
+            </select>
+          </div>
+
+          <!-- Filtro por Materia -->
+          <div class="filter-group">
+            <h3 class="filter-title">Materia</h3>
+            <label class="filter-option">
+              <input type="radio" name="subjectId" value="" th:checked="${filter.subjectId == null}" onchange="this.form.submit()">
+              <span>Todas</span>
+            </label>
+            <label th:each="s : ${subjects}" class="filter-option">
+              <input type="radio" name="subjectId" th:value="${s.id}" th:checked="${filter.subjectId == s.id}" onchange="this.form.submit()">
+              <span th:text="${s.name} + ' (' + ${s.code} + ')'">Materia</span>
+            </label>
+          </div>
+
+          <!-- Filtro por Formato -->
+          <div class="filter-group">
+            <h3 class="filter-title">Formato</h3>
+            <label class="filter-option">
+              <input type="radio" name="format" value="" th:checked="${filter.format == null}" onchange="this.form.submit()">
+              <span>Todos</span>
+            </label>
+            <label th:each="f : ${formats}" class="filter-option">
+              <input type="radio" name="format" th:value="${f}" th:checked="${filter.format == f}" onchange="this.form.submit()">
+              <span th:text="${f}">PDF</span>
+            </label>
+          </div>
+        </aside>
+
+        <!-- Resultados -->
+        <div>
+          <div th:if="${#lists.isEmpty(notes.content)}" style="text-align: center; padding: 60px 20px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">📂</div>
+            <h3 style="color: #334155; margin-bottom: 8px;">No se encontraron apuntes</h3>
+            <p style="color: #64748b; font-size: 0.9rem; max-width: 400px; margin: 0 auto 20px auto;">Prueba buscando con otros términos o ajustando los filtros de materia o carrera.</p>
+            <a th:href="@{/buscar}" class="btn btn-secondary btn-sm" style="border-radius: 20px;">Restablecer filtros</a>
+          </div>
+
+          <section class="files-grid" aria-label="Lista de archivos encontrados" th:if="${!#lists.isEmpty(notes.content)}">
+            <a th:each="note : ${notes.content}" th:href="@{/apuntes/{id}(id=${note.id})}" class="file-card">
+              <div class="file-card-top">
+                <div class="file-badges-left">
+                  <span th:if="${note.uploader.userRole.name() == 'PROFESSOR'}" class="badge badge-docente">🎓 Apunte de docente</span>
+                  <span th:if="${note.averageRating >= 4.5}" class="badge badge-destacado">★ Autor destacado</span>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(note.format)}" th:text="${note.format}">PDF</span>
+                <span class="file-card-meta" th:text="${#numbers.formatDecimal(note.sizeMB, 1, 1)} + ' MB'">1.5 MB</span>
+              </div>
+              <h3 class="file-card-title" th:text="${note.title}">Título del apunte</h3>
+              <p class="file-card-meta"><span th:text="${note.subject.name}">Cálculo I</span> · <span th:text="${note.topic != null ? note.topic.name : 'General'}">Tema</span></p>
+              <div class="file-card-stats">
+                <div class="stars-rating">
+                  ★ <span th:text="${#numbers.formatDecimal(note.averageRating, 1, 1)}">5.0</span>
+                  <span class="vote-count" th:text="'(' + ${note.ratingsCount} + ')'">(0)</span>
+                </div>
+                <div class="downloads-count" th:text="'↓ ' + ${note.downloadsCount}">↓ 0</div>
+              </div>
+              <div class="file-card-footer">
+                <span class="file-card-author" th:text="${note.uploader.fullName}">Autor</span>
+                <span th:text="${#temporals.format(note.uploadDate, 'dd MMM yyyy')}">15 ago 2025</span>
+              </div>
+            </a>
+          </section>
+
+          <!-- Paginación -->
+          <div th:if="${notes.totalPages > 1}" style="display: flex; justify-content: center; gap: 8px; margin-top: 32px;">
+            <a th:if="${notes.hasPrevious()}" th:href="@{/buscar(page=${notes.number - 1}, query=${filter.query}, programId=${filter.programId}, subjectId=${filter.subjectId}, format=${filter.format}, sortBy=${filter.sortBy})}" class="btn btn-secondary btn-sm" style="border-radius: 8px;">&larr; Anterior</a>
+            <span style="display: flex; align-items: center; padding: 0 12px; font-size: 0.88rem; color: #64748b;" th:text="'Página ' + (${notes.number} + 1) + ' de ' + ${notes.totalPages}"></span>
+            <a th:if="${notes.hasNext()}" th:href="@{/buscar(page=${notes.number + 1}, query=${filter.query}, programId=${filter.programId}, subjectId=${filter.subjectId}, format=${filter.format}, sortBy=${filter.sortBy})}" class="btn btn-secondary btn-sm" style="border-radius: 8px;">Siguiente &rarr;</a>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

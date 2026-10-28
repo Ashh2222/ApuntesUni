@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${note.title} + ' — Apuntes UNI'">Detalle del Apunte — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content">
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a th:href="@{/dashboard}">Inicio</a>
+      <span>›</span>
+      <a th:href="@{/buscar(subjectId=${note.subject.id})}" th:text="${note.subject.name}">Cálculo I</a>
+      <span>›</span>
+      <span style="color: var(--color-text); font-weight: 600;" th:text="${note.title}">Resumen</span>
+    </nav>
+
+    <!-- Layout 2 Columnas -->
+    <div class="file-detail-layout">
+
+      <!-- Columna Izquierda: Descripción, Previa, Comentarios -->
+      <div>
+
+        <!-- Tarjeta Descripción -->
+        <article class="detail-card">
+          <h2 style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px;">
+            Descripción del Apunte
+          </h2>
+          <p style="font-size: 0.95rem; color: #374151; line-height: 1.6;" th:text="${note.description}">
+            Descripción detallada del contenido del apunte.
+          </p>
+          <div th:if="${note.tags != null and !note.tags.isBlank()}" style="margin-top: 14px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span th:each="tag : ${#strings.arraySplit(note.tags, ',')}" class="badge" style="background-color: #f1f5f9; color: #475569;" th:text="'#' + ${#strings.trim(tag)}">#tag</span>
+          </div>
+        </article>
+
+        <!-- Tarjeta Vista Previa -->
+        <article class="detail-card" style="padding-bottom: 16px;">
+          <h2 style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px;">
+            Visualizador de Documento
+          </h2>
+          <div style="width: 100%; height: 500px; border-radius: 8px; overflow: hidden; border: 1px solid var(--color-border); background: #f8fafc;">
+            <iframe th:src="@{/apuntes/{id}/vista-previa(id=${note.id})}" width="100%" height="100%" style="border: none;" title="Vista previa del archivo"></iframe>
+          </div>
+          <div class="preview-bar" style="margin-top: 10px;">
+            <span th:text="${note.originalFileName} + ' (' + ${#numbers.formatDecimal(note.sizeMB, 1, 1)} + ' MB)'">archivo.pdf</span>
+            <a th:href="@{/apuntes/{id}/descargar(id=${note.id})}" class="btn btn-outline btn-sm">Descargar copia</a>
+          </div>
+        </article>
+
+        <!-- Tarjeta Comentarios -->
+        <section class="detail-card">
+          <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;" th:text="'Comentarios (' + ${#lists.size(comments)} + ')'">Comentarios (0)</h2>
+
+          <!-- Formulario Agregar Comentario (Autenticados) -->
+          <form sec:authorize="isAuthenticated()" th:action="@{/apuntes/{id}/comentar(id=${note.id})}" method="post" style="margin-bottom: 24px;">
+            <div class="form-group">
+              <textarea name="content" class="form-textarea" rows="3" placeholder="Comparte tu opinión o resuelve dudas sobre este apunte..." required></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 8px 18px;">Publicar comentario</button>
+            </div>
+          </form>
+
+          <div sec:authorize="isAnonymous()" style="padding: 14px; background: #f8fafc; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+            <a th:href="@{/login}" style="color: var(--color-primary); font-weight: 600;">Inicia sesión</a> para dejar un comentario o calificar este apunte.
+          </div>
+
+          <div class="comments-list">
+            <div th:if="${#lists.isEmpty(comments)}" style="text-align: center; color: #94a3b8; padding: 20px;">
+              No hay comentarios todavía. ¡Sé el primero en comentar!
+            </div>
+
+            <div th:each="c : ${comments}" class="comment-item">
+              <div class="avatar-circle" style="background-color: #e2e8f0; color: #475569; width: 34px; height: 34px; font-size: 0.85rem;">
+                <span th:text="${#strings.substring(c.user.fullName != null ? c.user.fullName : 'U', 0, 1)}">U</span>
+              </div>
+              <div class="comment-body" style="flex: 1;">
+                <div class="comment-header">
+                  <span class="comment-author" th:text="${c.user.fullName}">Nombre de Usuario</span>
+                  <span class="comment-date" th:text="${#temporals.format(c.createdAt, 'dd MMM yyyy, HH:mm')}">Fecha</span>
+                </div>
+                <p class="comment-text" th:text="${c.content}">Texto del comentario.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Columna Derecha: Descarga, Tu Calificación, Información -->
+      <aside>
+
+        <!-- Tarjeta Acción Principal -->
+        <div class="detail-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(note.format)}" th:text="${note.format}">PDF</span>
+            
+            <!-- Botón Favorito -->
+            <form sec:authorize="isAuthenticated()" th:action="@{/apuntes/{id}/favorito(id=${note.id})}" method="post" style="margin: 0;">
+              <button type="submit" class="btn btn-outline btn-sm" style="border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 4px;">
+                <span th:text="${isFavorite ? '❤️ Guardado' : '🤍 Guardar'}">🤍 Guardar</span>
+              </button>
+            </form>
+          </div>
+
+          <h1 style="font-size: 1.25rem; font-weight: 700; line-height: 1.3; margin-bottom: 6px;" th:text="${note.title}">
+            Título del apunte
+          </h1>
+          <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 16px;">
+            Tema: <strong th:text="${note.topic != null ? note.topic.name : 'General'}">Tema</strong>
+          </p>
+
+          <div style="margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="color: #f59e0b; font-size: 1.1rem;">★</span>
+              <span style="font-weight: 700; font-size: 1rem;" th:text="${#numbers.formatDecimal(note.averageRating, 1, 1)}">5.0</span>
+              <span style="color: var(--color-text-muted); font-size: 0.82rem;" th:text="'(' + ${note.ratingsCount} + ' valoraciones)'">(0 valoraciones)</span>
+            </div>
+          </div>
+
+          <!-- Tu calificación con formulario de estrellas -->
+          <div sec:authorize="isAuthenticated()" style="margin-bottom: 24px; padding-top: 14px; border-top: 1px solid #f1f5f9;">
+            <div style="font-size: 0.82rem; color: var(--color-text-muted); font-weight: 600; margin-bottom: 8px;">
+              Tu calificación: <span th:if="${userRating != null}" th:text="'(' + ${userRating} + ' estrellas)'" style="color: #f59e0b; font-weight: 700;"></span>
+            </div>
+            <form th:action="@{/apuntes/{id}/valorar(id=${note.id})}" method="post" style="display: flex; align-items: center; gap: 8px;">
+              <select name="value" class="form-select" style="font-size: 0.85rem; padding: 6px 10px; width: auto;">
+                <option value="5" th:selected="${userRating == 5}">⭐⭐⭐⭐⭐ (5 - Excelente)</option>
+                <option value="4" th:selected="${userRating == 4}">⭐⭐⭐⭐ (4 - Muy bueno)</option>
+                <option value="3" th:selected="${userRating == 3}">⭐⭐⭐ (3 - Bueno)</option>
+                <option value="2" th:selected="${userRating == 2}">⭐⭐ (2 - Regular)</option>
+                <option value="1" th:selected="${userRating == 1}">⭐ (1 - Malo)</option>
+              </select>
+              <button type="submit" class="btn btn-secondary btn-sm" style="border-radius: 6px; padding: 6px 12px;">Calificar</button>
+            </form>
+          </div>
+
+          <!-- Botón de Descarga Principal -->
+          <a th:href="@{/apuntes/{id}/descargar(id=${note.id})}" class="btn btn-primary btn-block" style="padding: 12px 20px; font-size: 0.95rem; margin-bottom: 14px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            Descargar archivo (<span th:text="${#numbers.formatDecimal(note.sizeMB, 1, 1)} + ' MB'">2.1 MB</span>)
+          </a>
+
+          <!-- Reportar y Borrar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px;">
+            <button sec:authorize="isAuthenticated()" type="button" onclick="openModal('reportModal')" class="btn" style="background: none; border: none; color: var(--color-text-muted); font-size: 0.82rem; padding: 4px; cursor: pointer;">
+              ⚐ Reportar contenido
+            </button>
+
+            <!-- Botón Eliminar si es autor o Admin -->
+            <form th:if="${currentUser != null and (currentUser.id == note.uploader.id or currentUser.admin)}" th:action="@{/apuntes/{id}/eliminar(id=${note.id})}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este apunte definitivamente?');" style="margin: 0;">
+              <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 6px; font-size: 0.75rem; padding: 4px 8px;">Eliminar apunte</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Tarjeta Información del Archivo -->
+        <div class="detail-card">
+          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 14px;">Información Académica</h3>
+          <table class="info-table">
+            <tbody>
+              <tr>
+                <td>Materia</td>
+                <td th:text="${note.subject.name} + ' (' + ${note.subject.code} + ')'">Cálculo I</td>
+              </tr>
+              <tr>
+                <td>Fecha de subida</td>
+                <td th:text="${#temporals.format(note.uploadDate, 'dd MMM yyyy')}">15 ago 2025</td>
+              </tr>
+              <tr>
+                <td>Descargas totales</td>
+                <td th:text="${note.downloadsCount}">0</td>
+              </tr>
+              <tr>
+                <td>Vistas</td>
+                <td th:text="${note.viewsCount}">0</td>
+              </tr>
+              <tr>
+                <td>Subido por</td>
+                <td>
+                  <span th:text="${note.uploader.fullName}">Carlos Mendoza</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- Modal de Reporte de Archivo -->
+  <div id="reportModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+    <div class="modal-card">
+      <button type="button" class="modal-close" data-close-modal aria-label="Cerrar modal" onclick="closeModal('reportModal')">×</button>
+      <h2 id="reportTitle" class="modal-title">Reportar apunte</h2>
+      <p class="modal-subtitle">Indica a la moderación el motivo del reporte:</p>
+
+      <form th:action="@{/apuntes/{id}/reportar(id=${note.id})}" method="post">
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+          <label class="filter-option" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: 8px;">
+            <input type="radio" name="reason" value="INAPPROPRIATE_CONTENT" checked>
+            <span>Contenido inapropiado / Ofensivo</span>
+          </label>
+          <label class="filter-option" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: 8px;">
+            <input type="radio" name="reason" value="COPYRIGHT_INFRINGEMENT">
+            <span>Infracción de derechos de autor / Plagio</span>
+          </label>
+          <label class="filter-option" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: 8px;">
+            <input type="radio" name="reason" value="WRONG_SUBJECT">
+            <span>Materia o tema incorrecto</span>
+          </label>
+          <label class="filter-option" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: 8px;">
+            <input type="radio" name="reason" value="SPAM">
+            <span>Spam o archivo ilegible/dañado</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="reportDescription" class="form-label">Detalles adicionales</label>
+          <textarea id="reportDescription" name="description" class="form-textarea" rows="2" placeholder="Describe brevemente el problema detectado..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-danger btn-block" style="padding: 11px;">Enviar reporte</button>
+      </form>
+    </div>
+  </div>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

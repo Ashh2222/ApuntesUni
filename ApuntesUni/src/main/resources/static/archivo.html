@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resumen: Integral definida — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="dashboard.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+
+        <div class="header-search">
+          <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <input type="search" placeholder="Busca por título o palabra clave..." aria-label="Buscar archivos">
+        </div>
+      </div>
+
+      <nav class="header-nav" aria-label="Navegación principal">
+        <a href="dashboard.html" class="nav-link">Inicio</a>
+        <a href="mis-materias.html" class="nav-link">Mis materias</a>
+        <a href="notificaciones.html" class="nav-link">Notificaciones</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="subir.html" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 7px 16px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          Subir
+        </a>
+
+        <a href="notificaciones.html" class="icon-bell-btn" aria-label="Notificaciones">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notification-dot"></span>
+        </a>
+
+        <a href="perfil.html" class="user-avatar-btn" aria-label="Perfil de usuario">
+          <span class="avatar-circle">AR</span>
+          <svg class="avatar-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a href="dashboard.html">Inicio</a>
+      <span>›</span>
+      <a href="buscar.html?materia=calculo1">Cálculo I</a>
+      <span>›</span>
+      <span style="color: var(--color-text); font-weight: 600;">Resumen: Integral definida</span>
+    </nav>
+
+    <!-- Layout 2 Columnas -->
+    <div class="file-detail-layout">
+
+      <!-- Columna Izquierda: Descripción, Previa, Comentarios -->
+      <div>
+
+        <!-- Tarjeta Descripción -->
+        <article class="detail-card">
+          <h2 style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px;">
+            Descripción
+          </h2>
+          <p style="font-size: 0.92rem; color: #374151; line-height: 1.6;">
+            Este documento aborda la teoría fundamental de la integral definida, incluyendo el Teorema Fundamental del Cálculo y su demostración. Se presentan técnicas de integración por partes, sustitución trigonométrica y fracciones parciales, con ejercicios resueltos paso a paso para cada método.
+          </p>
+        </article>
+
+        <!-- Tarjeta Vista Previa -->
+        <article class="detail-card" style="padding-bottom: 0;">
+          <div class="preview-container">
+            <div style="width: 54px; height: 64px; background-color: var(--color-danger-light); color: var(--color-danger); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.15);">
+              📄
+            </div>
+            <div style="font-weight: 700; font-size: 1rem; color: var(--color-text); margin-top: 6px;">
+              Vista previa — Página 1 de 8
+            </div>
+            <div style="font-size: 0.8rem; color: var(--color-text-muted);">
+              Resumen_Integral_Definida.pdf
+            </div>
+          </div>
+
+          <div class="preview-bar">
+            <span>8 páginas · 2.1 MB · PDF</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button type="button" class="btn btn-outline btn-sm" style="padding: 4px 8px;" aria-label="Página anterior">&lt;</button>
+              <span>1 / 8</span>
+              <button type="button" class="btn btn-outline btn-sm" style="padding: 4px 8px;" aria-label="Página siguiente">&gt;</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Tarjeta Comentarios -->
+        <section class="detail-card">
+          <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">Comentarios (3)</h2>
+
+          <form onsubmit="event.preventDefault(); const t = this.querySelector('textarea'); if(t.value.trim()){ alert('Comentario publicado correctamente.'); t.value=''; }">
+            <div class="form-group">
+              <label for="nuevo-comentario" class="sr-only" style="display:none;">Escribe tu comentario</label>
+              <textarea id="nuevo-comentario" class="form-textarea" rows="3" placeholder="Comparte tu opinión sobre este archivo..." required></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary">Publicar comentario</button>
+            </div>
+          </form>
+
+          <div class="comments-list">
+            <!-- Comentario 1 -->
+            <div class="comment-item">
+              <div class="avatar-circle" style="background-color: #e2e8f0; color: #475569; width: 32px; height: 32px; font-size: 0.8rem;">
+                C
+              </div>
+              <div class="comment-body">
+                <div class="comment-header">
+                  <span class="comment-author">Carlos M.</span>
+                  <span class="comment-date">16 ago 2025</span>
+                </div>
+                <p class="comment-text">
+                  Excelente material, tiene la solución completa y muy bien explicada. Me ayudó muchísimo para recuperar el parcial.
+                </p>
+              </div>
+            </div>
+
+            <!-- Comentario 2 -->
+            <div class="comment-item">
+              <div class="avatar-circle" style="background-color: #e2e8f0; color: #475569; width: 32px; height: 32px; font-size: 0.8rem;">
+                V
+              </div>
+              <div class="comment-body">
+                <div class="comment-header">
+                  <span class="comment-author">Valeria S.</span>
+                  <span class="comment-date">14 ago 2025</span>
+                </div>
+                <p class="comment-text">
+                  El examen del 2024-I es prácticamente igual al que tomó el profe este semestre. Muy recomendado.
+                </p>
+              </div>
+            </div>
+
+            <!-- Comentario 3 -->
+            <div class="comment-item">
+              <div class="avatar-circle" style="background-color: #e2e8f0; color: #475569; width: 32px; height: 32px; font-size: 0.8rem;">
+                D
+              </div>
+              <div class="comment-body">
+                <div class="comment-header">
+                  <span class="comment-author">Diego P.</span>
+                  <span class="comment-date">12 ago 2025</span>
+                </div>
+                <p class="comment-text">
+                  Hay un pequeño error en el ejercicio 3b, pero el resto de la demostración es impecable.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Columna Derecha: Descarga, Tu Calificación, Información -->
+      <aside>
+
+        <!-- Tarjeta Acción Principal -->
+        <div class="detail-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span class="badge badge-pdf">PDF</span>
+          </div>
+
+          <h1 style="font-size: 1.25rem; font-weight: 700; line-height: 1.3; margin-bottom: 6px;">
+            Resumen completo: Integral definida con ejercicios resueltos
+          </h1>
+          <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 16px;">
+            Tema: Integral definida
+          </p>
+
+          <div style="margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="color: #f59e0b; font-size: 1rem;">★★★★★</span>
+              <span style="font-weight: 700; font-size: 0.95rem;">4.8</span>
+              <span style="color: var(--color-text-muted); font-size: 0.82rem;">(64 votos)</span>
+            </div>
+          </div>
+
+          <!-- Tu calificación -->
+          <div style="margin-bottom: 24px; padding-top: 14px; border-top: 1px solid #f1f5f9;">
+            <div style="font-size: 0.82rem; color: var(--color-text-muted); font-weight: 500; margin-bottom: 4px;">Tu calificación:</div>
+            <div class="rating-input-stars" id="starRatingInput" aria-label="Calificar archivo con estrellas">
+              <span data-val="1">☆</span>
+              <span data-val="2">☆</span>
+              <span data-val="3">☆</span>
+              <span data-val="4">☆</span>
+              <span data-val="5">☆</span>
+            </div>
+          </div>
+
+          <!-- Botón de Descarga -->
+          <a href="#" download class="btn btn-primary btn-block" style="padding: 12px 20px; font-size: 0.95rem; margin-bottom: 14px;" onclick="alert('Descargando archivo: Resumen_Integral_Definida.pdf'); return false;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            Descargar PDF
+          </a>
+
+          <!-- Reportar archivo -->
+          <div style="text-align: center;">
+            <button type="button" onclick="openModal('reportModal')" class="btn" style="background: none; border: none; color: var(--color-text-muted); font-size: 0.82rem; padding: 6px;">
+              ⚐ Reportar archivo
+            </button>
+          </div>
+        </div>
+
+        <!-- Tarjeta Información -->
+        <div class="detail-card">
+          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 14px;">Información</h3>
+          <table class="info-table">
+            <tbody>
+              <tr>
+                <td>Materia</td>
+                <td>Cálculo I</td>
+              </tr>
+              <tr>
+                <td>Fecha</td>
+                <td>15 ago 2025</td>
+              </tr>
+              <tr>
+                <td>Descargas</td>
+                <td>412</td>
+              </tr>
+              <tr>
+                <td>Tamaño</td>
+                <td>2.1 MB</td>
+              </tr>
+              <tr>
+                <td>Subido por</td>
+                <td>
+                  Carlos Mendoza
+                  <span class="author-rating-pill" style="margin-left: 4px;">★ 4.7</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- Modal de Reporte de Archivo -->
+  <div id="reportModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+    <div class="modal-card">
+      <button type="button" class="modal-close" data-close-modal aria-label="Cerrar modal">×</button>
+      <h2 id="reportTitle" class="modal-title">Reportar archivo</h2>
+      <p class="modal-subtitle">Selecciona el motivo del reporte:</p>
+
+      <form onsubmit="event.preventDefault(); alert('Reporte enviado a moderación exitosamente.'); closeModal('reportModal');">
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+          <label class="filter-option" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: 8px;">
+            <input type="radio" name="motivo_reporte" value="incorrecto" checked>
+            <span>Contenido incorrecto</span>
+          </label>
+          <label class="filter-option" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: 8px;">
+            <input type="radio" name="motivo_reporte" value="plagio">
+            <span>Plagio</span>
+          </label>
+          <label class="filter-option" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: 8px;">
+            <input type="radio" name="motivo_reporte" value="spam">
+            <span>Spam</span>
+          </label>
+          <label class="filter-option" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: 8px;">
+            <input type="radio" name="motivo_reporte" value="ofensivo">
+            <span>Contenido ofensivo</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-danger btn-block" style="padding: 11px;">Enviar reporte</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

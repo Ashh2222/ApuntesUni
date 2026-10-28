@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil de usuario — Apuntes UNI</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Autenticado -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="dashboard.html" class="brand-logo" aria-label="Inicio Apuntes UNI">
+          <span class="brand-icon">U</span>
+          <span class="brand-text">Apuntes <span class="brand-accent">UNI</span></span>
+        </a>
+
+        <div class="header-search">
+          <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <input type="search" placeholder="Busca por título o palabra clave..." aria-label="Buscar archivos">
+        </div>
+      </div>
+
+      <nav class="header-nav" aria-label="Navegación principal">
+        <a href="dashboard.html" class="nav-link">Inicio</a>
+        <a href="mis-materias.html" class="nav-link">Mis materias</a>
+        <a href="notificaciones.html" class="nav-link">Notificaciones</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="subir.html" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 7px 16px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          Subir
+        </a>
+
+        <a href="notificaciones.html" class="icon-bell-btn" aria-label="Notificaciones">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notification-dot"></span>
+        </a>
+
+        <a href="perfil.html" class="user-avatar-btn" aria-label="Perfil de usuario">
+          <span class="avatar-circle">AR</span>
+          <svg class="avatar-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <div class="profile-layout">
+
+      <!-- Columna Izquierda: Tarjeta de Perfil -->
+      <aside class="profile-sidebar-card">
+
+        <!-- MODO VISUALIZACIÓN (Default) -->
+        <div id="profileViewMode">
+          <div class="profile-avatar-wrapper">
+            <div class="profile-avatar-large">AR</div>
+          </div>
+
+          <h1 id="viewNombre" style="font-size: 1.25rem; font-weight: 700; color: var(--color-text); margin-bottom: 4px;">
+            Ana Lucía Romero
+          </h1>
+          <p id="viewCarrera" style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 8px;">
+            Ingeniería de Sistemas
+          </p>
+          <div style="margin-bottom: 16px;">
+            <span id="viewSemestre" class="badge badge-pill-soft">Semestre 6</span>
+          </div>
+
+          <!-- Caja Amarilla de Calificación Promedio -->
+          <div class="profile-rating-box">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; color: #b45309; font-size: 1.1rem; margin-bottom: 2px;">
+              <span style="color: #f59e0b;">★★★★★</span>
+              <span>4.4</span>
+            </div>
+            <div style="font-size: 0.72rem; color: #92400e;">
+              Calificación promedio de sus publicaciones
+            </div>
+          </div>
+
+          <!-- Botón Editar Perfil -->
+          <button type="button" onclick="toggleEditProfile(true)" class="btn btn-outline btn-block" style="font-size: 0.85rem; margin-bottom: 16px;">
+            ✏️ Editar perfil
+          </button>
+        </div>
+
+        <!-- MODO EDICIÓN EN LÍNEA (Oculto inicialmente) -->
+        <div id="profileEditMode" style="display: none; text-align: left;">
+          <div style="text-align: center; margin-bottom: 18px;">
+            <div class="profile-avatar-wrapper">
+              <div class="profile-avatar-large">AR</div>
+              <span style="position: absolute; bottom: 0; right: 0; background-color: var(--color-white); border: 1px solid var(--color-border); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; box-shadow: var(--shadow-sm);">
+                ✏️
+              </span>
+            </div>
+          </div>
+
+          <form onsubmit="saveProfile(event)">
+            <div class="form-group">
+              <label for="editNombre" class="form-label">Nombre completo</label>
+              <input type="text" id="editNombre" class="form-input" value="Ana Lucía Romero" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editCarrera" class="form-label">Carrera</label>
+              <select id="editCarrera" class="form-select" required>
+                <option selected>Ingeniería de Sistemas</option>
+                <option>Ingeniería Industrial</option>
+                <option>Ingeniería Civil</option>
+                <option>Ingeniería Química</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Semestre</label>
+              <div class="semesters-grid">
+                <button type="button" class="semester-btn" data-semester="1">1</button>
+                <button type="button" class="semester-btn" data-semester="2">2</button>
+                <button type="button" class="semester-btn" data-semester="3">3</button>
+                <button type="button" class="semester-btn" data-semester="4">4</button>
+                <button type="button" class="semester-btn" data-semester="5">5</button>
+                <button type="button" class="semester-btn active" data-semester="6">6</button>
+                <button type="button" class="semester-btn" data-semester="7">7</button>
+                <button type="button" class="semester-btn" data-semester="8">8</button>
+                <button type="button" class="semester-btn" data-semester="9">9</button>
+                <button type="button" class="semester-btn" data-semester="10">10</button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 18px;">
+              <button type="button" onclick="toggleEditProfile(false)" class="btn btn-outline" style="flex: 1;">Cancelar</button>
+              <button type="submit" class="btn btn-primary" style="flex: 1;">Guardar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Estadísticas fijas abajo -->
+        <div class="profile-stats-row">
+          <div class="profile-stat-item">
+            <div class="profile-stat-value">4</div>
+            <div class="profile-stat-label">Archivos</div>
+          </div>
+          <div class="profile-stat-item">
+            <div class="profile-stat-value">600</div>
+            <div class="profile-stat-label">Descargas</div>
+          </div>
+          <div class="profile-stat-item">
+            <div class="profile-stat-value">4.4★</div>
+            <div class="profile-stat-label">Reputación</div>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Columna Derecha: Mis archivos subidos -->
+      <section>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--color-text);">Mis archivos subidos</h2>
+          <span style="font-size: 0.85rem; color: var(--color-text-muted);">4 archivos</span>
+        </div>
+
+        <div class="files-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+          <!-- Card 1 -->
+          <a href="archivo.html" class="file-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span class="badge badge-pdf">PDF</span>
+              <span class="file-card-meta">980 KB</span>
+            </div>
+            <h3 class="file-card-title">Apuntes de clase — Semana 9: Termodinámica básica</h3>
+            <p class="file-card-meta">Química General · Termodinámica básica</p>
+            <div class="file-card-stats">
+              <div class="stars-rating">★★★★☆ <span class="vote-count">(28)</span></div>
+              <div class="downloads-count">↓ 156</div>
+            </div>
+            <div class="file-card-footer">
+              <span class="file-card-author">Ana Romero</span>
+              <span>8 ago 2025</span>
+            </div>
+          </a>
+
+          <!-- Card 2 -->
+          <a href="archivo.html" class="file-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span class="badge badge-pdf">PDF</span>
+              <span class="file-card-meta">640 KB</span>
+            </div>
+            <h3 class="file-card-title">Resumen de álgebra booleana para el parcial</h3>
+            <p class="file-card-meta">Programación I · Álgebra booleana</p>
+            <div class="file-card-stats">
+              <div class="stars-rating">★★★★☆ <span class="vote-count">(15)</span></div>
+              <div class="downloads-count">↓ 89</div>
+            </div>
+            <div class="file-card-footer">
+              <span class="file-card-author">Ana Romero</span>
+              <span>20 jul 2025</span>
+            </div>
+          </a>
+
+          <!-- Card 3 -->
+          <a href="archivo.html" class="file-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span class="badge badge-pdf">PDF</span>
+              <span class="file-card-meta">1.2 MB</span>
+            </div>
+            <h3 class="file-card-title">Apuntes: Límites y continuidad con ejercicios</h3>
+            <p class="file-card-meta">Cálculo I · Límites</p>
+            <div class="file-card-stats">
+              <div class="stars-rating">★★★★★ <span class="vote-count">(34)</span></div>
+              <div class="downloads-count">↓ 212</div>
+            </div>
+            <div class="file-card-footer">
+              <span class="file-card-author">Ana Romero</span>
+              <span>5 jun 2025</span>
+            </div>
+          </a>
+
+          <!-- Card 4 -->
+          <a href="archivo.html" class="file-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span class="badge badge-docx">DOCX</span>
+              <span class="file-card-meta">880 KB</span>
+            </div>
+            <h3 class="file-card-title">Resumen: Reacciones ácido-base en Química General</h3>
+            <p class="file-card-meta">Química General · Reacciones</p>
+            <div class="file-card-stats">
+              <div class="stars-rating">★★★★★ <span class="vote-count">(22)</span></div>
+              <div class="downloads-count">↓ 143</div>
+            </div>
+            <div class="file-card-footer">
+              <span class="file-card-author">Ana Romero</span>
+              <span>15 may 2025</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    function toggleEditProfile(editing) {
+      document.getElementById('profileViewMode').style.display = editing ? 'none' : 'block';
+      document.getElementById('profileEditMode').style.display = editing ? 'block' : 'none';
+    }
+
+    function saveProfile(e) {
+      e.preventDefault();
+      const nuevoNombre = document.getElementById('editNombre').value;
+      const nuevaCarrera = document.getElementById('editCarrera').value;
+      document.getElementById('viewNombre').textContent = nuevoNombre;
+      document.getElementById('viewCarrera').textContent = nuevaCarrera;
+      toggleEditProfile(false);
+      alert('Perfil actualizado con éxito');
+    }
+  </script>
+</body>
+</html>

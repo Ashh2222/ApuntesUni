@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configura tu perfil — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+
+  <header class="auth-header">
+    <div class="avatar-circle" style="width: 44px; height: 44px; font-size: 1.2rem; margin: 0 auto 12px auto; box-shadow: 0 4px 10px rgba(47, 95, 224, 0.3);">
+      U
+    </div>
+  </header>
+
+  <main class="auth-card" style="max-width: 480px;">
+    <!-- Encabezado de paso y progreso -->
+    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--color-text-muted); margin-bottom: 8px;">
+      <span>Configura tu perfil</span>
+      <span>Paso inicial</span>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" style="width: 50%;"></div>
+    </div>
+
+    <h1 class="auth-card-title">Cuéntanos sobre ti</h1>
+    <p class="auth-card-subtitle">
+      Esto nos ayuda a mostrarte el contenido más relevante para tu carrera y materias.
+    </p>
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <form th:action="@{/onboarding}" method="post">
+      <div class="form-group">
+        <label for="programId" class="form-label">Carrera principal *</label>
+        <select id="programId" name="programId" class="form-select" required>
+          <option value="" disabled selected>Selecciona tu carrera</option>
+          <option th:each="p : ${programs}" th:value="${p.id}" th:text="${p.name}">Ingeniería de Sistemas</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Semestre actual *</label>
+        <input type="hidden" id="semesterInput" name="semester" value="1">
+        <div class="semesters-grid" role="radiogroup" aria-label="Semestre actual">
+          <button type="button" class="semester-btn active" data-semester="1" onclick="selectSemester(1, this)">1</button>
+          <button type="button" class="semester-btn" data-semester="2" onclick="selectSemester(2, this)">2</button>
+          <button type="button" class="semester-btn" data-semester="3" onclick="selectSemester(3, this)">3</button>
+          <button type="button" class="semester-btn" data-semester="4" onclick="selectSemester(4, this)">4</button>
+          <button type="button" class="semester-btn" data-semester="5" onclick="selectSemester(5, this)">5</button>
+          <button type="button" class="semester-btn" data-semester="6" onclick="selectSemester(6, this)">6</button>
+          <button type="button" class="semester-btn" data-semester="7" onclick="selectSemester(7, this)">7</button>
+          <button type="button" class="semester-btn" data-semester="8" onclick="selectSemester(8, this)">8</button>
+          <button type="button" class="semester-btn" data-semester="9" onclick="selectSemester(9, this)">9</button>
+          <button type="button" class="semester-btn" data-semester="10" onclick="selectSemester(10, this)">10</button>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 20px;">
+        <label class="form-label">Inscríbete en tus materias de inicio (opcional)</label>
+        <div style="max-height: 180px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <label th:each="s : ${subjects}" class="filter-option" style="padding: 4px 6px;">
+            <input type="checkbox" name="subjectIds" th:value="${s.id}">
+            <span th:text="${s.name} + ' (' + ${s.code} + ')'">Cálculo I</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top: 24px;">Comenzar a explorar</button>
+    </form>
+
+    <div class="auth-card-footer" style="font-size: 0.78rem;">
+      Podrás cambiar tu carrera o materias en cualquier momento desde tu perfil.
+    </div>
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+  <script>
+    function selectSemester(num, btn) {
+      document.getElementById('semesterInput').value = num;
+      document.querySelectorAll('.semester-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de roles — Panel Admin — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header Admin -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content">
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="admin-layout">
+
+      <!-- Sidebar Admin -->
+      <aside class="admin-sidebar" aria-label="Menú de administración">
+        <div class="admin-sidebar-header">Panel de Control</div>
+        <nav class="admin-nav">
+          <a th:href="@{/admin/materias}" class="admin-nav-item">Gestión de Materias</a>
+          <a th:href="@{/admin/roles}" class="admin-nav-item active">Usuarios y Roles</a>
+          <a th:href="@{/moderacion/reportes}" class="admin-nav-item">Reportes y Moderación</a>
+        </nav>
+      </aside>
+
+      <!-- Contenido Admin -->
+      <section>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text);">Usuarios del Sistema</h1>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted);" th:text="${users.totalElements} + ' usuarios registrados'">0 usuarios</p>
+          </div>
+        </div>
+
+        <div class="admin-content-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Correo Electrónico</th>
+                <th>Rol Actual</th>
+                <th>Estado</th>
+                <th>Cambiar Rol</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="u : ${users.content}">
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="avatar-circle" style="background-color: #dbeafe; color: #1e40af; width: 30px; height: 30px; font-size: 0.75rem;" th:text="${#strings.substring(u.fullName != null ? u.fullName : 'U', 0, 1)}">U</span>
+                    <span style="font-weight: 600;" th:text="${u.fullName}">Nombre</span>
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);" th:text="${u.email}">correo@uni.edu.pe</td>
+                <td>
+                  <span class="badge" th:classappend="'badge-role-' + ${#strings.toLowerCase(u.userRole)}" th:text="${u.userRole}">ESTUDIANTE</span>
+                </td>
+                <td>
+                  <span th:if="${u.active}" class="badge" style="background: #dcfce7; color: #15803d;">Activo</span>
+                  <span th:if="${!u.active}" class="badge" style="background: #fee2e2; color: #b91c1c;">Suspendido</span>
+                </td>
+                <td>
+                  <form th:action="@{/admin/roles/{id}/cambiar(id=${u.id})}" method="post" style="display: flex; gap: 6px; align-items: center; margin: 0;">
+                    <select name="role" class="form-select" style="padding: 4px 8px; font-size: 0.82rem; width: auto;">
+                      <option th:each="r : ${roles}" th:value="${r}" th:text="${r}" th:selected="${u.userRole == r}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-outline btn-sm" style="padding: 4px 8px; font-size: 0.75rem;">Guardar</button>
+                  </form>
+                </td>
+                <td style="text-align: right;">
+                  <form th:action="@{/admin/roles/{id}/toggle-activo(id=${u.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-outline btn-sm" style="padding: 4px 8px; font-size: 0.75rem;" th:text="${u.active ? 'Suspender' : 'Activar'}">Suspender</button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div th:if="${users.totalPages > 1}" class="table-footer">
+            <span th:text="'Página ' + (${users.number} + 1) + ' de ' + ${users.totalPages}">Página 1</span>
+            <div style="display: flex; gap: 6px;">
+              <a th:if="${users.hasPrevious()}" th:href="@{/admin/roles(page=${users.number - 1})}" class="btn btn-outline btn-sm">&lt;</a>
+              <a th:if="${users.hasNext()}" th:href="@{/admin/roles(page=${users.number + 1})}" class="btn btn-outline btn-sm">&gt;</a>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>
