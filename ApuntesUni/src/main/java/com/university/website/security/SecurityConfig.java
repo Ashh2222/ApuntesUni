@@ -43,11 +43,15 @@ public class SecurityConfig {
                     "/login",
                     "/registro",
                     "/recuperar-password",
+                    "/restablecer-password",
+                    "/terminos",
+                    "/privacidad",
                     "/buscar",
                     "/apuntes",
-                    "/apuntes/detalle/**",
-                    "/apuntes/{id}",
-                    "/apuntes/{id}/vista-previa",
+                    "/apuntes/*",
+                    "/apuntes/*/vista-previa",
+                    "/apuntes/*/descargar",
+                    "/api/**",
                     "/css/**",
                     "/js/**",
                     "/assets/**",
@@ -57,25 +61,30 @@ public class SecurityConfig {
                 ).permitAll()
 
                 // Panel de administración
-                .requestMatchers("/admin/**").hasRole("ADMINISTRATOR")
+                .requestMatchers("/admin", "/admin/**").hasRole("ADMINISTRATOR")
 
                 // Panel de moderación y reportes
-                .requestMatchers("/moderacion/**").hasAnyRole("MODERATOR", "ADMINISTRATOR")
+                .requestMatchers("/moderacion", "/moderacion/**").hasAnyRole("MODERATOR", "ADMINISTRATOR")
 
                 // Acciones de usuarios autenticados
                 .requestMatchers(
                     "/dashboard",
                     "/subir",
                     "/apuntes/subir",
-                    "/apuntes/*/descargar",
                     "/apuntes/*/valorar",
                     "/apuntes/*/comentar",
                     "/apuntes/*/favorito",
                     "/apuntes/*/reportar",
+                    "/apuntes/*/eliminar",
+                    "/onboarding",
                     "/onboarding/**",
+                    "/mis-materias",
                     "/mis-materias/**",
+                    "/perfil",
                     "/perfil/**",
+                    "/configuracion",
                     "/configuracion/**",
+                    "/notificaciones",
                     "/notificaciones/**"
                 ).authenticated()
 

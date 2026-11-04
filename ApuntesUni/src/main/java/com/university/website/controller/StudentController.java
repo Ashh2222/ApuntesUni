@@ -13,7 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -173,14 +176,25 @@ public class StudentController {
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al actualizar perfil. Verifica los campos.");
+            String firstError = bindingResult.getAllErrors().isEmpty() ? "Error de validación al actualizar." : bindingResult.getAllErrors().get(0).getDefaultMessage();
+            redirectAttributes.addFlashAttribute("errorMessage", firstError);
             return "redirect:/perfil";
         }
 
         try {
             userService.updateProfile(currentUser.getId(), profileDto);
+            User updatedUser = userService.findById(currentUser.getId());
+            CustomUserDetails updatedDetails = new CustomUserDetails(updatedUser);
+            Authentication auth = new UsernamePasswordAuthenticationToken(
+                    updatedDetails,
+                    updatedDetails.getPassword(),
+                    updatedDetails.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
             redirectAttributes.addFlashAttribute("successMessage", "Perfil actualizado con éxito.");
         } catch (Exception e) {
+            log.error("Error al actualizar perfil: ", e);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
         return "redirect:/perfil";

@@ -42,57 +42,78 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         storageService.init();
 
-        if (userRepository.count() > 0) {
-            log.info("Base de datos ya inicializada con usuarios. Omitiendo seed.");
+        byte[] dummyPdfContent = ("%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj 3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f\n0000000009 00000 n\n0000000052 00000 n\n0000000101 00000 n\ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n180\n%%EOF").getBytes(StandardCharsets.ISO_8859_1);
+
+        // Restaurar archivos dummy en almacenamiento local si no existen (evita error 404 tras reinicio de contenedor)
+        for (Note n : noteRepository.findAll()) {
+            try {
+                storageService.loadAsResource(n.getStoragePath());
+            } catch (Exception e) {
+                try {
+                    java.nio.file.Path target = storageService.load(n.getStoragePath());
+                    java.nio.file.Files.createDirectories(target.getParent());
+                    java.nio.file.Files.write(target, dummyPdfContent);
+                    log.info("Archivo de apunte restaurado en almacenamiento físico: {}", n.getStoragePath());
+                } catch (Exception ex) {
+                    log.warn("No se pudo regenerar archivo para apunte {}: {}", n.getId(), ex.getMessage());
+                }
+            }
+        }
+
+        if (userRepository.count() > 0 && subjectRepository.count() > 0) {
+            log.info("Base de datos ya inicializada con usuarios y materias. Omitiendo seed.");
             return;
         }
 
         log.info("Iniciando seed de datos iniciales para Apuntes UNI...");
 
-        // 1. Usuarios del sistema
-        User admin = new User(
-                "Administrador UNI",
-                "admin@uni.edu.pe",
-                passwordEncoder.encode("Password123!"),
-                UserRole.ADMINISTRATOR
-        );
-        userRepository.save(admin);
+        // 1. Usuarios del sistema (Idempotente)
+        User admin = userRepository.findByEmailIgnoreCase("admin@uni.edu.pe").orElseGet(() -> {
+            User u = new User("Administrador UNI", "admin@uni.edu.pe", passwordEncoder.encode("Password123!"), UserRole.ADMINISTRATOR);
+            return userRepository.save(u);
+        });
 
-        User moderador = new User(
-                "Moderador Académico",
-                "moderador@uni.edu.pe",
-                passwordEncoder.encode("Password123!"),
-                UserRole.MODERATOR
-        );
-        userRepository.save(moderador);
+        User moderador = userRepository.findByEmailIgnoreCase("moderador@uni.edu.pe").orElseGet(() -> {
+            User u = new User("Moderador Académico", "moderador@uni.edu.pe", passwordEncoder.encode("Password123!"), UserRole.MODERATOR);
+            return userRepository.save(u);
+        });
 
-        Student studentAna = new Student();
-        studentAna.setFullName("Ana Romero");
-        studentAna.setEmail("ana@uni.edu.pe");
-        studentAna.setPasswordHash(passwordEncoder.encode("Password123!"));
-        studentAna.setUserRole(UserRole.STUDENT);
-        studentAna.setStudentCode("20210045A");
-        studentAna.setInstitutionalEmail("aromero@uni.edu.pe");
-        studentAna.setEntryYear(2021);
-        studentAna.setReputationPoints(150);
-        studentAna.setVerifiedStudent(true);
-        studentAna.setActive(true);
-        studentAna.setBio("Estudiante de 6to ciclo de Ingeniería de Sistemas interesada en desarrollo de software y computación distribuida.");
-        studentRepository.save(studentAna);
+        Student studentAna = studentRepository.findByEmailIgnoreCase("ana@uni.edu.pe").orElseGet(() -> {
+            Student s = new Student();
+            s.setFullName("Ana Romero");
+            s.setEmail("ana@uni.edu.pe");
+            s.setPasswordHash(passwordEncoder.encode("Password123!"));
+            s.setUserRole(UserRole.STUDENT);
+            s.setStudentCode("20210045A");
+            s.setInstitutionalEmail("aromero@uni.edu.pe");
+            s.setEntryYear(2021);
+            s.setReputationPoints(150);
+            s.setVerifiedStudent(true);
+            s.setActive(true);
+            s.setBio("Estudiante de 6to ciclo de Ingeniería de Sistemas interesada en desarrollo de software y computación distribuida.");
+            return studentRepository.save(s);
+        });
 
-        Student studentCarlos = new Student();
-        studentCarlos.setFullName("Carlos Mendoza");
-        studentCarlos.setEmail("carlos@uni.edu.pe");
-        studentCarlos.setPasswordHash(passwordEncoder.encode("Password123!"));
-        studentCarlos.setUserRole(UserRole.STUDENT);
-        studentCarlos.setStudentCode("20201123B");
-        studentCarlos.setInstitutionalEmail("cmendoza@uni.edu.pe");
-        studentCarlos.setEntryYear(2020);
-        studentCarlos.setReputationPoints(320);
-        studentCarlos.setVerifiedStudent(true);
-        studentCarlos.setActive(true);
-        studentCarlos.setBio("Amante de las matemáticas y la física teórica.");
-        studentRepository.save(studentCarlos);
+        Student studentCarlos = studentRepository.findByEmailIgnoreCase("carlos@uni.edu.pe").orElseGet(() -> {
+            Student s = new Student();
+            s.setFullName("Carlos Mendoza");
+            s.setEmail("carlos@uni.edu.pe");
+            s.setPasswordHash(passwordEncoder.encode("Password123!"));
+            s.setUserRole(UserRole.STUDENT);
+            s.setStudentCode("20201123B");
+            s.setInstitutionalEmail("cmendoza@uni.edu.pe");
+            s.setEntryYear(2020);
+            s.setReputationPoints(320);
+            s.setVerifiedStudent(true);
+            s.setActive(true);
+            s.setBio("Amante de las matemáticas y la física teórica.");
+            return studentRepository.save(s);
+        });
+
+        if (subjectRepository.count() > 0) {
+            log.info("Catálogo de materias ya existente. Omitiendo seed de materias.");
+            return;
+        }
 
         // 2. Carreras / Programas Académicos
         AcademicProgram sis = new AcademicProgram();
