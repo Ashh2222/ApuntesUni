@@ -60,6 +60,9 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
+        // Asegurar que las materias clave tengan siempre sus temas completos (incluso en bases de datos existentes)
+        ensureDefaultTopics();
+
         if (userRepository.count() > 0 && subjectRepository.count() > 0) {
             log.info("Base de datos ya inicializada con usuarios y materias. Omitiendo seed.");
             return;
@@ -174,13 +177,16 @@ public class DataInitializer implements CommandLineRunner {
 
         Topic topicNewton = new Topic("TOP-04", "Dinámica y leyes de Newton", "Fuerzas, equilibrio y segunda ley.", 2, fisica1);
         Topic topicCinematica = new Topic("TOP-05", "Cinemática", "MRU, MRUV y movimiento en dos dimensiones.", 1, fisica1);
-        topicRepository.saveAll(List.of(topicNewton, topicCinematica));
+        Topic topicEnergia = new Topic("TOP-06", "Trabajo y Conservación de la Energía", "Energía cinética, potencial y teoremas de conservación.", 3, fisica1);
+        topicRepository.saveAll(List.of(topicNewton, topicCinematica, topicEnergia));
 
-        Topic topicEspacios = new Topic("TOP-06", "Transformaciones lineales y subespacios", "Núcleo, imagen y matriz de transformación.", 3, algebra);
+        Topic topicEspacios = new Topic("TOP-07", "Transformaciones lineales y subespacios", "Núcleo, imagen y matriz de transformación.", 3, algebra);
         topicRepository.save(topicEspacios);
 
-        Topic topicPOO = new Topic("TOP-07", "Programación Orientada a Objetos", "Clases, herencia, polimorfismo y encapsulamiento.", 3, programacion1);
-        topicRepository.save(topicPOO);
+        Topic topicEstructuras = new Topic("TOP-08", "Estructuras de Control y Funciones", "Condicionales, bucles, funciones y modularización.", 1, programacion1);
+        Topic topicArreglos = new Topic("TOP-09", "Arreglos y Algoritmos de Búsqueda", "Vectores, matrices, ordenamiento y recursión.", 2, programacion1);
+        Topic topicPOO = new Topic("TOP-10", "Programación Orientada a Objetos", "Clases, herencia, polimorfismo y encapsulamiento.", 3, programacion1);
+        topicRepository.saveAll(List.of(topicEstructuras, topicArreglos, topicPOO));
 
         // 5. Vincular programas a estudiantes
         StudentProgram spAna = new StudentProgram(studentAna, sis, true, 6);
@@ -264,6 +270,36 @@ public class DataInitializer implements CommandLineRunner {
         log.info("  Admin:      admin@uni.edu.pe / Password123!");
         log.info("  Moderador:  moderador@uni.edu.pe / Password123!");
         log.info("  Estudiante: ana@uni.edu.pe / Password123!");
+    }
+
+    private void ensureDefaultTopics() {
+        subjectRepository.findByCodeIgnoreCase("MA101").ifPresent(s -> {
+            ensureTopic(s, "TOP-01", "Integral definida", "Cálculo de áreas, volumen y teoremas fundamentales.", 3);
+            ensureTopic(s, "TOP-02", "Límites y continuidad", "Definición rigurosa, indeterminaciones y límites laterales.", 1);
+            ensureTopic(s, "TOP-03", "Derivadas y aplicaciones", "Reglas de derivación y optimización.", 2);
+        });
+
+        subjectRepository.findByCodeIgnoreCase("FI101").ifPresent(s -> {
+            ensureTopic(s, "TOP-04", "Dinámica y leyes de Newton", "Fuerzas, equilibrio y segunda ley.", 2);
+            ensureTopic(s, "TOP-05", "Cinemática", "MRU, MRUV y movimiento en dos dimensiones.", 1);
+            ensureTopic(s, "TOP-06", "Trabajo y Conservación de la Energía", "Energía cinética, potencial y teoremas de conservación.", 3);
+        });
+
+        subjectRepository.findByCodeIgnoreCase("CS101").ifPresent(s -> {
+            ensureTopic(s, "TOP-08", "Estructuras de Control y Funciones", "Condicionales, bucles, funciones y modularización.", 1);
+            ensureTopic(s, "TOP-09", "Arreglos y Algoritmos de Búsqueda", "Vectores, matrices, ordenamiento y recursión.", 2);
+            ensureTopic(s, "TOP-10", "Programación Orientada a Objetos", "Clases, herencia, polimorfismo y encapsulamiento.", 3);
+        });
+    }
+
+    private void ensureTopic(Subject subject, String code, String name, String desc, int orderIndex) {
+        List<Topic> current = topicRepository.findBySubject_IdOrderByOrderIndexAsc(subject.getId());
+        boolean exists = current.stream().anyMatch(t -> t.getName().equalsIgnoreCase(name));
+        if (!exists) {
+            Topic t = new Topic(code, name, desc, orderIndex, subject);
+            topicRepository.save(t);
+            log.info("Tema inicial agregado a {}: {}", subject.getName(), name);
+        }
     }
 
     private Subject createSubject(String code, String name, String desc, int credits, Set<AcademicProgram> programs) {

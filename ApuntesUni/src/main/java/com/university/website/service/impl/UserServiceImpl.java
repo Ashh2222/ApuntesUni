@@ -64,13 +64,14 @@ public class UserServiceImpl implements UserService {
 
         Student student = new Student();
         student.setFullName(dto.getFullName().trim());
+        student.setUsername(dto.getUsername() != null ? dto.getUsername().trim() : null);
         student.setEmail(dto.getEmail().trim().toLowerCase());
         student.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         student.setUserRole(UserRole.STUDENT);
         student.setProfileVisibility(ProfileVisibility.PUBLIC);
         student.setActive(true);
         student.setJoinDate(LocalDateTime.now());
-        student.setStudentCode(dto.getStudentCode() != null && !dto.getStudentCode().isBlank() ? dto.getStudentCode().trim() : null);
+        student.setStudentCode(dto.getUsername() != null && !dto.getUsername().isBlank() ? dto.getUsername().trim() : dto.getStudentCode());
         student.setEntryYear(dto.getEntryYear() != null ? dto.getEntryYear() : LocalDateTime.now().getYear());
         student.setReputationPoints(0);
         student.setVerifiedStudent(false);
@@ -81,10 +82,11 @@ public class UserServiceImpl implements UserService {
         NotificationSettings settings = new NotificationSettings(savedStudent);
         notificationSettingsRepository.save(settings);
 
-        // Asignar carrera si se especificó
+        // Asignar carrera y semestre si se especificó
         if (dto.getAcademicProgramId() != null) {
+            int sem = (dto.getCurrentSemester() != null && dto.getCurrentSemester() >= 1 && dto.getCurrentSemester() <= 12) ? dto.getCurrentSemester() : 1;
             academicProgramRepository.findById(dto.getAcademicProgramId()).ifPresent(program -> {
-                StudentProgram sp = new StudentProgram(savedStudent, program, true, 1);
+                StudentProgram sp = new StudentProgram(savedStudent, program, true, sem);
                 studentProgramRepository.save(sp);
             });
         }

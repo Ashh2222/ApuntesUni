@@ -78,12 +78,15 @@ public class DashboardServiceImpl implements DashboardService {
             }
         }
 
-        // Obtener lista de materias activas del catálogo con su conteo de notas
-        List<Subject> subjects = subjectRepository.findAllByActiveTrueOrderByNameAsc();
+        // Obtener solo las materias inscritas por el usuario (o lista vacía si no tiene)
         List<SubjectSummaryDto> catalogSubjects = new ArrayList<>();
-        for (Subject s : subjects) {
-            long notesCount = s.getNotes() != null ? s.getNotes().stream().filter(Note::isPublished).count() : 0;
-            catalogSubjects.add(new SubjectSummaryDto(s.getId(), s.getCode(), s.getName(), s.getCredits(), notesCount));
+        if (userId != null && enrolledSubjectsCount > 0) {
+            var activeEnrollments = enrollmentRepository.findByStudent_IdAndStatus(userId, EnrollmentStatus.ACTIVE);
+            for (var enrollment : activeEnrollments) {
+                Subject s = enrollment.getSubject();
+                long notesCount = s.getNotes() != null ? s.getNotes().stream().filter(Note::isPublished).count() : 0;
+                catalogSubjects.add(new SubjectSummaryDto(s.getId(), s.getCode(), s.getName(), s.getCredits(), notesCount));
+            }
         }
 
         // Obtener apuntes recientes y populares

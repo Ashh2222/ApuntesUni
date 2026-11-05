@@ -17,6 +17,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import com.university.website.exception.UnauthorizedActionException;
+import com.university.website.repository.NoteRepository;
+import com.university.website.service.EnrollmentService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +47,8 @@ public class NoteController {
     private final FavoriteService favoriteService;
     private final ReportService reportService;
     private final DownloadService downloadService;
+    private final EnrollmentService enrollmentService;
+    private final NoteRepository noteRepository;
 
     @GetMapping("/buscar")
     public String searchNotes(
@@ -261,6 +268,125 @@ public class NoteController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
         return "redirect:/buscar";
+    }
+
+    @GetMapping("/explorar")
+    public String exploreNotes(
+            @RequestParam(value = "subjectId", required = false) Long subjectId,
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "12") int size,
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            Model model
+    ) {
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+
+        List<Subject> enrolledSubjects = enrollmentService.findActiveSubjectsByStudent(currentUser.getId());
+        boolean hasEnrolledSubjects = !enrolledSubjects.isEmpty();
+        model.addAttribute("hasEnrolledSubjects", hasEnrolledSubjects);
+        model.addAttribute("enrolledSubjects", enrolledSubjects);
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("selectedSubjectId", subjectId);
+        model.addAttribute("query", query);
+
+        if (!hasEnrolledSubjects) {
+            model.addAttribute("notes", org.springframework.data.domain.Page.empty());
+            return "explorar";
+        }
+
+        List<Long> subjectIdsToQuery = (subjectId != null)
+                ? List.of(subjectId)
+                : enrolledSubjects.stream().map(Subject::getId).toList();
+
+        org.springframework.data.domain.Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "uploadDate"));
+        org.springframework.data.domain.Page<Note> notes;
+        if (query != null && !query.isBlank()) {
+            notes = noteRepository.searchWithFilters(
+                    NoteStatus.PUBLISHED,
+                    null,
+                    subjectId,
+                    null,
+                    null,
+                    query.trim(),
+                    pageable
+            );
+        } else {
+            notes = noteRepository.findBySubject_IdInAndStatus(subjectIdsToQuery, NoteStatus.PUBLISHED, pageable);
+        }
+
+        model.addAttribute("notes", notes);
+        return "explorar";
+    }
+
+    @GetMapping("/apuntes/{id}/editar")
+    public String showEditForm(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            Model model
+    ) {
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+
+        Note note = noteService.findById(id);
+        if (!note.getUploader().getId().equals(currentUser.getId()) && !currentUser.isAdmin() && !currentUser.isModerator()) {
+            throw new UnauthorizedActionException("No tienes permiso para editar este apunte.");
+        }
+
+        NoteUploadDto uploadDto = new NoteUploadDto();
+        uploadDto.setTitle(note.getTitle());
+        uploadDto.setDescription(note.getDescription());
+        uploadDto.setSubjectId(note.getSubject() != null ? note.getSubject().getId() : null);
+        uploadDto.setTopicId(note.getTopic() != null ? note.getTopic().getId() : null);
+        uploadDto.setTags(note.getTags());
+
+        model.addAttribute("note", note);
+        model.addAttribute("uploadDto", uploadDto);
+        model.addAttribute("subjects", academicService.findAllSubjects());
+        model.addAttribute("programs", academicService.findAllPrograms());
+        if (note.getSubject() != null) {
+            model.addAttribute("topics", academicService.findTopicsBySubject(note.getSubject().getId()));
+        } else {
+            model.addAttribute("topics", Collections.emptyList());
+        }
+        model.addAttribute("currentUser", currentUser);
+
+        return "editar-apunte";
+    }
+
+    @PostMapping("/apuntes/{id}/editar")
+    public String processEdit(
+            @PathVariable("id") Long id,
+            @Valid @ModelAttribute("uploadDto") NoteUploadDto uploadDto,
+            BindingResult bindingResult,
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+
+        if (bindingResult.hasFieldErrors("title") || bindingResult.hasFieldErrors("description") || bindingResult.hasFieldErrors("subjectId")) {
+            Note note = noteService.findById(id);
+            model.addAttribute("note", note);
+            model.addAttribute("subjects", academicService.findAllSubjects());
+            model.addAttribute("programs", academicService.findAllPrograms());
+            model.addAttribute("currentUser", currentUser);
+            return "editar-apunte";
+        }
+
+        try {
+            noteService.updateNote(id, currentUser.getId(), uploadDto);
+            redirectAttributes.addFlashAttribute("successMessage", "¡Apunte actualizado correctamente!");
+            return "redirect:/apuntes/" + id;
+        } catch (Exception e) {
+            log.error("Error al editar apunte: ", e);
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/apuntes/" + id + "/editar";
+        }
     }
 
     @GetMapping("/api/materias/{subjectId}/temas")

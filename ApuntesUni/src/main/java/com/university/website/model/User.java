@@ -34,6 +34,10 @@ public class User {
     @ToString.Include
     private String fullName;
 
+    @Column(name = "username", length = 50)
+    @ToString.Include
+    private String username;
+
     @NotBlank
     @Email
     @Column(nullable = false, unique = true)

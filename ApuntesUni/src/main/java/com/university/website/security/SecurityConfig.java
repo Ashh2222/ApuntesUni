@@ -69,8 +69,10 @@ public class SecurityConfig {
                 // Acciones de usuarios autenticados
                 .requestMatchers(
                     "/dashboard",
+                    "/explorar",
                     "/subir",
                     "/apuntes/subir",
+                    "/apuntes/*/editar",
                     "/apuntes/*/valorar",
                     "/apuntes/*/comentar",
                     "/apuntes/*/favorito",

@@ -53,14 +53,27 @@
       </div>
     </section>
 
-    <!-- Catálogo de Materias -->
+    <!-- Catálogo de Materias del Estudiante -->
     <section style="margin-bottom: 40px;">
       <div class="section-header">
-        <h2 class="section-title">Catálogo de materias</h2>
-        <a th:href="@{/mis-materias}" style="font-size: 0.88rem; font-weight: 600;">Ver mis materias →</a>
+        <h2 class="section-title">Mis materias</h2>
+        <a th:href="@{/mis-materias}" style="font-size: 0.88rem; font-weight: 600;">Administrar materias →</a>
       </div>
 
-      <div class="catalog-grid">
+      <!-- Estado vacío: si el usuario no tiene materias inscritas -->
+      <div th:if="${dashboard.enrolledSubjectsCount == 0}" style="background: white; border-radius: 12px; border: 1px dashed #cbd5e1; padding: 36px 20px; text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 8px;">📚</div>
+        <h3 style="font-size: 1.1rem; color: #1e293b; margin-bottom: 6px;">No tienes materias inscritas</h3>
+        <p style="color: #64748b; font-size: 0.9rem; max-width: 480px; margin: 0 auto 16px auto;">
+          Inscríbete en tus asignaturas para ver aquí los apuntes y exámenes de tu ciclo académico.
+        </p>
+        <a th:href="@{/mis-materias}" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 8px 20px;">
+          + Inscribir materias
+        </a>
+      </div>
+
+      <!-- Cuadrícula con las materias que el usuario tiene inscritas -->
+      <div th:if="${dashboard.enrolledSubjectsCount > 0}" class="catalog-grid">
         <a th:each="subj : ${dashboard.catalogSubjects}" th:href="@{/buscar(subjectId=${subj.id})}" class="catalog-subject-card">
           <div class="catalog-subject-top">
             <span class="catalog-subject-code" th:text="${subj.code}">MA101</span>

@@ -18,6 +18,8 @@ public interface NoteRepository extends JpaRepository<Note, Long>, JpaSpecificat
 
     Page<Note> findByStatus(NoteStatus status, Pageable pageable);
 
+    Page<Note> findBySubject_IdInAndStatus(List<Long> subjectIds, NoteStatus status, Pageable pageable);
+
     Page<Note> findByUploader_Id(Long uploaderId, Pageable pageable);
 
     Page<Note> findByUploader_IdAndStatus(Long uploaderId, NoteStatus status, Pageable pageable);

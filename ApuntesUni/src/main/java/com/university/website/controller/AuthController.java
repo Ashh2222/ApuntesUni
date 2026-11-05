@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
     private final UserService userService;
+    private final com.university.website.service.AcademicService academicService;
 
     @GetMapping("/login")
     public String showLoginForm(
@@ -54,6 +55,7 @@ public class AuthController {
         if (!model.containsAttribute("registrationDto")) {
             model.addAttribute("registrationDto", new UserRegistrationDto());
         }
+        model.addAttribute("programs", academicService.findAllPrograms());
         return "registro";
     }
 
@@ -69,6 +71,7 @@ public class AuthController {
         }
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("programs", academicService.findAllPrograms());
             return "registro";
         }
 
@@ -78,6 +81,7 @@ public class AuthController {
             return "redirect:/login";
         } catch (Exception e) {
             log.error("Error durante el registro: ", e);
+            model.addAttribute("programs", academicService.findAllPrograms());
             model.addAttribute("errorMessage", e.getMessage());
             return "registro";
         }

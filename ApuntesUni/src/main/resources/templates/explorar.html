@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explorar Apuntes — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar superior -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content">
+
+    <!-- Mensajes Flash -->
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 1.6rem; font-weight: 700; color: var(--color-text); margin-bottom: 6px;">Explorar apuntes</h1>
+      <p style="font-size: 0.9rem; color: var(--color-text-muted);">Descubre material académico relacionado con tus materias inscritas y áreas de estudio.</p>
+    </div>
+
+    <!-- CASO 1: Si el estudiante no tiene materias inscritas -->
+    <section th:if="${!hasEnrolledSubjects}" style="background: white; border-radius: 12px; border: 1px dashed #cbd5e1; padding: 60px 24px; text-align: center; max-width: 650px; margin: 40px auto;">
+      <div style="font-size: 3.5rem; margin-bottom: 14px;">📚</div>
+      <h2 style="font-size: 1.35rem; font-weight: 700; color: #1e293b; margin-bottom: 8px;">No hay materias inscritas</h2>
+      <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+        Inscríbete en tus materias para explorar archivos y recomendaciones personalizadas según tus asignaturas y material de estudio.
+      </p>
+      <a th:href="@{/mis-materias}" class="btn btn-primary" style="border-radius: 24px; padding: 10px 28px; font-weight: 600; font-size: 0.95rem;">
+        Inscribir materias
+      </a>
+    </section>
+
+    <!-- CASO 2: Si el estudiante tiene materias inscritas -->
+    <section th:if="${hasEnrolledSubjects}">
+
+      <!-- Barra de Filtros de Materias Inscritas (Chips) y Buscador -->
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+        
+        <!-- Buscador dentro de materias inscritas -->
+        <form th:action="@{/explorar}" method="get" style="display: flex; gap: 10px; max-width: 600px; width: 100%;">
+          <input type="hidden" name="subjectId" th:value="${selectedSubjectId}" th:if="${selectedSubjectId != null}">
+          <div style="position: relative; flex: 1;">
+            <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; fill: var(--color-text-muted);" viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.3 14l5.4 5.3-1.4 1.4-5.3-5.3A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
+            <input type="search" name="query" th:value="${query}" class="form-input" style="padding-left: 40px; border-radius: 20px;" placeholder="Buscar en mis materias inscritas...">
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 0 18px;">Buscar</button>
+          <a th:if="${query != null or selectedSubjectId != null}" th:href="@{/explorar}" class="btn btn-outline btn-sm" style="border-radius: 20px; padding: 0 14px;">Limpiar</a>
+        </form>
+
+        <!-- Chips de Materias -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); margin-right: 4px;">Materias:</span>
+          
+          <a th:href="@{/explorar(query=${query})}" 
+             class="btn btn-sm" 
+             th:style="${selectedSubjectId == null ? 'border-radius: 20px; background-color: var(--color-primary); color: white; border: none;' : 'border-radius: 20px; background: white; border: 1px solid var(--color-border); color: var(--color-text);'}">
+            Todas mis materias (<span th:text="${#lists.size(enrolledSubjects)}">0</span>)
+          </a>
+
+          <a th:each="s : ${enrolledSubjects}" 
+             th:href="@{/explorar(subjectId=${s.id}, query=${query})}" 
+             class="btn btn-sm" 
+             th:style="${selectedSubjectId == s.id ? 'border-radius: 20px; background-color: var(--color-primary); color: white; border: none;' : 'border-radius: 20px; background: white; border: 1px solid var(--color-border); color: var(--color-text);'}"
+             th:text="${s.name}">
+            Cálculo I
+          </a>
+        </div>
+      </div>
+
+      <!-- Resultados / Grilla de Apuntes -->
+      <div>
+        <div th:if="${#lists.isEmpty(notes.content)}" style="text-align: center; padding: 50px 20px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
+          <div style="font-size: 3rem; margin-bottom: 12px;">📂</div>
+          <h3 style="color: #334155; margin-bottom: 6px;">No se encontraron apuntes para este filtro</h3>
+          <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 16px;">Sé el primero en compartir un resumen o apunte de esta materia con tus compañeros.</p>
+          <a th:href="@{/subir}" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 8px 20px;">+ Subir apunte</a>
+        </div>
+
+        <section class="files-grid" aria-label="Lista de archivos explorados" th:if="${!#lists.isEmpty(notes.content)}">
+          <a th:each="note : ${notes.content}" th:href="@{/apuntes/{id}(id=${note.id})}" class="file-card">
+            <div class="file-card-top">
+              <div class="file-badges-left">
+                <span th:if="${note.uploader.userRole.name() == 'PROFESSOR'}" class="badge badge-docente">🎓 Apunte de docente</span>
+                <span th:if="${note.averageRating >= 4.5}" class="badge badge-destacado">★ Destacado</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(note.format)}" th:text="${note.format}">PDF</span>
+              <span class="file-card-meta" th:text="${#numbers.formatDecimal(note.sizeMB, 1, 1)} + ' MB'">1.5 MB</span>
+            </div>
+            <h3 class="file-card-title" th:text="${note.title}">Título del apunte</h3>
+            <p class="file-card-meta"><span th:text="${note.subject.name}">Cálculo I</span> · <span th:text="${note.topic != null ? note.topic.name : 'General'}">Tema</span></p>
+            <div class="file-card-stats">
+              <div class="stars-rating">
+                ★ <span th:text="${#numbers.formatDecimal(note.averageRating, 1, 1)}">5.0</span>
+                <span class="vote-count" th:text="'(' + ${note.ratingsCount} + ')'">(0)</span>
+              </div>
+              <div class="downloads-count" th:text="'↓ ' + ${note.downloadsCount}">↓ 0</div>
+            </div>
+            <div class="file-card-footer">
+              <span class="file-card-author" th:text="${note.uploader.fullName}">Autor</span>
+              <span th:text="${#temporals.format(note.uploadDate, 'dd MMM yyyy')}">15 ago 2025</span>
+            </div>
+          </a>
+        </section>
+
+        <!-- Paginación -->
+        <nav th:if="${notes.totalPages > 1}" class="pagination" aria-label="Paginación" style="margin-top: 30px;">
+          <a th:if="${notes.hasPrevious()}" th:href="@{/explorar(page=${notes.number - 1}, subjectId=${selectedSubjectId}, query=${query})}" class="page-link">&laquo; Anterior</a>
+          <span th:each="i : ${#numbers.sequence(0, notes.totalPages - 1)}">
+            <a th:href="@{/explorar(page=${i}, subjectId=${selectedSubjectId}, query=${query})}" th:text="${i + 1}" class="page-link" th:classappend="${i == notes.number} ? 'active' : ''">1</a>
+          </span>
+          <a th:if="${notes.hasNext()}" th:href="@{/explorar(page=${notes.number + 1}, subjectId=${selectedSubjectId}, query=${query})}" class="page-link">Siguiente &raquo;</a>
+        </nav>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -176,16 +176,19 @@
             Descargar archivo (<span th:text="${#numbers.formatDecimal(note.sizeMB, 1, 1)} + ' MB'">2.1 MB</span>)
           </a>
 
-          <!-- Reportar y Borrar -->
-          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px;">
+          <!-- Reportar y Opciones de Autor -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; gap: 8px; flex-wrap: wrap;">
             <button sec:authorize="isAuthenticated()" type="button" onclick="openModal('reportModal')" class="btn" style="background: none; border: none; color: var(--color-text-muted); font-size: 0.82rem; padding: 4px; cursor: pointer;">
               ⚐ Reportar contenido
             </button>
 
-            <!-- Botón Eliminar si es autor o Admin -->
-            <form th:if="${currentUser != null and (currentUser.id == note.uploader.id or currentUser.admin)}" th:action="@{/apuntes/{id}/eliminar(id=${note.id})}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este apunte definitivamente?');" style="margin: 0;">
-              <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 6px; font-size: 0.75rem; padding: 4px 8px;">Eliminar apunte</button>
-            </form>
+            <!-- Opciones si es autor o Admin -->
+            <div th:if="${currentUser != null and (currentUser.id == note.uploader.id or currentUser.admin)}" style="display: flex; gap: 6px; align-items: center;">
+              <a th:href="@{/apuntes/{id}/editar(id=${note.id})}" class="btn btn-outline btn-sm" style="border-radius: 6px; font-size: 0.75rem; padding: 4px 10px; text-decoration: none;">✏️ Editar apunte</a>
+              <form th:action="@{/apuntes/{id}/eliminar(id=${note.id})}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este apunte definitivamente?');" style="margin: 0;">
+                <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 6px; font-size: 0.75rem; padding: 4px 8px;">Eliminar</button>
+              </form>
+            </div>
           </div>
         </div>
 

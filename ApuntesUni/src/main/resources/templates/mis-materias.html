@@ -42,9 +42,16 @@
 
     <!-- Lista de Materias Inscritas -->
     <div id="seccionInscritas" class="subject-list">
-      <div th:if="${#lists.isEmpty(enrolledSubjects)}" style="text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
-        <p style="color: #64748b;">Aún no estás inscrito en ninguna materia.</p>
-        <button type="button" onclick="mostrarTab('disponibles')" class="btn btn-primary btn-sm" style="margin-top: 10px; border-radius: 20px;">Inscribir materias ahora</button>
+      <!-- Estado vacío cuando no hay materias inscritas -->
+      <div th:if="${#lists.isEmpty(enrolledSubjects)}" style="text-align: center; padding: 48px 20px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; margin-bottom: 20px;">
+        <div style="font-size: 2.6rem; margin-bottom: 10px;">📋</div>
+        <h3 style="color: #334155; font-size: 1.15rem; font-weight: 700; margin-bottom: 6px;">No hay materias inscritas</h3>
+        <p style="color: #64748b; font-size: 0.9rem; max-width: 440px; margin: 0 auto 18px auto;">
+          Actualmente no tienes asignaturas inscritas. Inscríbete para acceder rápidamente a los resúmenes y apuntes de tu ciclo.
+        </p>
+        <button type="button" onclick="mostrarTab('disponibles')" class="btn btn-primary btn-sm" style="border-radius: 20px; padding: 8px 24px;">
+          Inscribir materias
+        </button>
       </div>
 
       <div th:each="s : ${enrolledSubjects}" class="subject-item-card materia-card" data-tipo="inscrita">

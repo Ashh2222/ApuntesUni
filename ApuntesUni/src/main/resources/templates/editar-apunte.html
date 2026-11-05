@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Apunte — Apuntes UNI</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="main-content main-content-narrow">
+
+    <!-- Mensajes Flash -->
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div style="margin-bottom: 24px;">
+      <a th:href="@{/apuntes/{id}(id=${note.id})}" style="font-size: 0.85rem; color: var(--color-primary); text-decoration: none;">&larr; Volver al apunte</a>
+      <h1 style="font-size: 1.6rem; font-weight: 700; color: var(--color-text); margin-top: 8px;">Editar apunte</h1>
+      <p style="font-size: 0.9rem; color: var(--color-text-muted);">Actualiza el título, descripción o clasificación de tu material de estudio.</p>
+    </div>
+
+    <form th:action="@{/apuntes/{id}/editar(id=${note.id})}" method="post" enctype="multipart/form-data" th:object="${uploadDto}">
+
+      <!-- Título -->
+      <section class="upload-card-step">
+        <div class="step-header">
+          <span class="step-badge">1</span>
+          <span>Título del apunte</span>
+        </div>
+        <div class="form-group">
+          <input type="text" th:field="*{title}" class="form-input" required minlength="3" maxlength="150" placeholder="Ej. Resumen de Integrales Dobles...">
+          <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color: #dc2626; font-size: 0.8rem; margin-top: 4px;"></div>
+        </div>
+      </section>
+
+      <!-- Clasificación: Materia y Tema -->
+      <section class="upload-card-step">
+        <div class="step-header">
+          <span class="step-badge">2</span>
+          <span>Clasificación académica</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label for="subjectSelect" class="form-label">Materia</label>
+            <select id="subjectSelect" th:field="*{subjectId}" class="form-select" required onchange="loadTopics(this.value)">
+              <option value="">Selecciona la materia...</option>
+              <option th:each="s : ${subjects}" th:value="${s.id}" th:text="${s.name} + ' (' + ${s.code} + ')'"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('subjectId')}" th:errors="*{subjectId}" style="color: #dc2626; font-size: 0.8rem; margin-top: 4px;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="topicSelect" class="form-label">Tema específico (opcional)</label>
+            <select id="topicSelect" th:field="*{topicId}" class="form-select">
+              <option value="">Selecciona un tema...</option>
+              <option th:each="t : ${topics}" th:value="${t.id}" th:text="${t.name}"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label for="tagsInput" class="form-label">Etiquetas (separadas por coma)</label>
+          <input type="text" id="tagsInput" th:field="*{tags}" class="form-input" placeholder="ej: integrales, parcial, formulario">
+        </div>
+      </section>
+
+      <!-- Descripción -->
+      <section class="upload-card-step">
+        <div class="step-header">
+          <span class="step-badge">3</span>
+          <span>Descripción del contenido</span>
+        </div>
+        <div class="form-group">
+          <textarea th:field="*{description}" class="form-textarea" rows="4" maxlength="1000" required placeholder="Describe qué cubre este apunte..."></textarea>
+          <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" style="color: #dc2626; font-size: 0.8rem; margin-top: 4px;"></div>
+        </div>
+      </section>
+
+      <!-- Archivo opcional (para reemplazar el actual) -->
+      <section class="upload-card-step">
+        <div class="step-header">
+          <span class="step-badge">4</span>
+          <span>Archivo actual</span>
+        </div>
+        <p style="font-size: 0.88rem; color: #475569; margin-bottom: 12px;">
+          Archivo actual: <strong th:text="${note.originalFileName}">archivo.pdf</strong>
+        </p>
+        <div class="form-group">
+          <label for="newFile" class="form-label">Reemplazar archivo (opcional):</label>
+          <input type="file" id="newFile" name="file" class="form-input" accept=".pdf,.docx,.pptx,.txt,.png,.jpg,.jpeg">
+          <small style="color: #64748b;">Deja este campo vacío si deseas mantener el archivo actual.</small>
+        </div>
+      </section>
+
+      <!-- Botones de Acción -->
+      <div style="display: flex; gap: 14px; margin-top: 24px;">
+        <a th:href="@{/apuntes/{id}(id=${note.id})}" class="btn btn-outline" style="flex: 1; text-align: center; text-decoration: none; padding: 12px;">Cancelar</a>
+        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 12px;">Guardar cambios</button>
+      </div>
+
+    </form>
+
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+  <script>
+    async function loadTopics(subjectId) {
+      const topicSelect = document.getElementById('topicSelect');
+      topicSelect.innerHTML = '<option value="">Cargando temas...</option>';
+      if (!subjectId) {
+        topicSelect.innerHTML = '<option value="">Selecciona un tema...</option>';
+        return;
+      }
+      try {
+        const resp = await fetch('/api/materias/' + subjectId + '/temas');
+        const topics = await resp.json();
+        topicSelect.innerHTML = '<option value="">Selecciona un tema...</option>';
+        topics.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.id;
+          opt.textContent = t.name;
+          topicSelect.appendChild(opt);
+        });
+      } catch (err) {
+        topicSelect.innerHTML = '<option value="">General</option>';
+      }
+    }
+  </script>
+</body>
+</html>
